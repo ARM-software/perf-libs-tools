@@ -224,8 +224,13 @@ def generate_blasplot(args):
 #    plt.xlabel('Routine')
     plt.ylabel('Iterations')
 #    plt.title('BLAS level 1')
+    plt.ylim(ymin=0)
+    plt.xlim(xmin=0)
     plt.xticks(index1 + bar_width, BLAS1)
 #    plt.legend(bbox_to_anchor=(1.01,1), loc="upper left")
+    if (args.showLegend and len(b1s_its)+len(b1d_its)+len(b1c_its)+len(b1z_its)>0) : 
+        plt.legend(bbox_to_anchor=(1.01,1), loc="upper left")
+        args.showLegend=0
 
 #    print len(BLAS1), len(b1s_its)
     
@@ -234,6 +239,7 @@ def generate_blasplot(args):
     
     plt.subplot(612)
         
+    plt.ylim(ymin=0)
     plot2S = plt.bar(index2, b2s_its, bar_width,        alpha=opacity, color='r',        label="S"    )
     plot2D = plt.bar(index2+bar_width, b2d_its, bar_width,        alpha=opacity, color='b',        label="D"    )
     plot2C = plt.bar(index2+2*bar_width, b2c_its, bar_width,        alpha=opacity, color='y',        label="C"    )
@@ -244,6 +250,9 @@ def generate_blasplot(args):
 #    plt.title('BLAS level 2')
     plt.xticks(index2 + bar_width, BLAS2)
 #    plt.legend(bbox_to_anchor=(1.01,1), loc="upper left")
+    if (args.showLegend and len(b2s_its)+len(b2d_its)+len(b2c_its)+len(b2z_its)>0) : 
+        plt.legend(bbox_to_anchor=(1.01,1), loc="upper left")
+        args.showLegend=0
 
 #    plt.tight_layout()
 #    plt.show()
@@ -251,6 +260,7 @@ def generate_blasplot(args):
 
     plt.subplot(613)
         
+    plt.ylim(ymin=0)
     plot3S = plt.bar(index3, b3s_its, bar_width,        alpha=opacity, color='r',        label="S"    )
     plot3D = plt.bar(index3+bar_width, b3d_its, bar_width,        alpha=opacity, color='b',        label="D"    )
     plot3C = plt.bar(index3+2*bar_width, b3c_its, bar_width,        alpha=opacity, color='y',        label="C"    )
@@ -261,11 +271,15 @@ def generate_blasplot(args):
 #    plt.title('BLAS level 3')
     plt.xticks(index3 + bar_width, BLAS3)
 #    plt.legend(bbox_to_anchor=(1.01,1), loc="upper left")
+    if (args.showLegend and len(b3s_its)+len(b3d_its)+len(b3c_its)+len(b3z_its)>0) : 
+        plt.legend(bbox_to_anchor=(1.01,1), loc="upper left")
+        args.showLegend=0
 
 #    plt.tight_layout()
     
     plt.subplot(614)
         
+    plt.ylim(ymin=0)
     plot1S = plt.bar(index1, b1s_time, bar_width,        alpha=opacity, color='r',        label="S"    )
     plot1D = plt.bar(index1+bar_width, b1d_time, bar_width,        alpha=opacity, color='b',        label="D"    )
     plot1C = plt.bar(index1+2*bar_width, b1c_time, bar_width,        alpha=opacity, color='y',        label="C"    )
@@ -284,6 +298,7 @@ def generate_blasplot(args):
     
     plt.subplot(615)
         
+    plt.ylim(ymin=0)
     plot2S = plt.bar(index2, b2s_time, bar_width,        alpha=opacity, color='r',        label="S"    )
     plot2D = plt.bar(index2+bar_width, b2d_time, bar_width,        alpha=opacity, color='b',        label="D"    )
     plot2C = plt.bar(index2+2*bar_width, b2c_time, bar_width,        alpha=opacity, color='y',        label="C"    )
@@ -301,6 +316,7 @@ def generate_blasplot(args):
 
     plt.subplot(616)
         
+    plt.ylim(ymin=0)
     plot3S = plt.bar(index3, b3s_time, bar_width,        alpha=opacity, color='r',        label="S"    )
     plot3D = plt.bar(index3+bar_width, b3d_time, bar_width,        alpha=opacity, color='b',        label="D"    )
     plot3C = plt.bar(index3+2*bar_width, b3c_time, bar_width,        alpha=opacity, color='y',        label="C"    )
@@ -310,8 +326,10 @@ def generate_blasplot(args):
     plt.ylabel('Time')
 #    plt.title('BLAS level 3')
     plt.xticks(index3 + bar_width, BLAS3)
-    if (args.showLegend) : 
-        plt.legend(bbox_to_anchor=(1.01,1), loc="upper left")
+    plt.xlim(xmin=0)
+#    plt.xlim(xmax=1)
+#    if (args.showLegend) : 
+#        plt.legend(bbox_to_anchor=(1.01,1), loc="upper left")
 
 #    plt.tight_layout()
     plt.show()

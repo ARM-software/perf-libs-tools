@@ -11,25 +11,47 @@ FILE *unsafe_fptr;
 
 /* Routine called at start of ARMPL function to record details of function call into the logger structure */
 
-void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numIinps, int numCinps, ...)
+void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numVinps, int numIinps, int numCinps, ...)
 {
-  int i;
+  int i, j, dimension=0, loc=0;
   va_list ap;
 
   sprintf(logger->NAME, "%s", FNC);
 
   va_start(ap, numCinps);
+  
+  if (numVinps>0)
+  	dimension = va_arg(ap, int);
 
   logger->numIargs = numIinps;
+  if (numVinps>0) logger->numIargs += numVinps*dimension+1;
   logger->numCargs = numCinps;
 
-  if (numIinps>0)
+  if (numIinps+numVinps>0)
   {
-  	logger->Iinp = malloc(sizeof(int)*numIinps);
+  	logger->Iinp = malloc(sizeof(int)*logger->numIargs);
+  	
+  	loc=0;
 
+        if (numVinps>0)
+        {
+		logger->Iinp[loc] = dimension;
+		loc++;
+	
+	  	for (i = 0; i<numVinps; i++)
+	  	{
+	  		int *dataPtr = va_arg(ap, int*);
+	  		for (j = 0; j<dimension; j++)
+  			{
+		  		logger->Iinp[loc] = dataPtr[j];
+		  		loc++;
+		  	}
+  		}
+  	}
   	for (i = 0; i<numIinps; i++)
   	{
-  		logger->Iinp[i] = va_arg(ap, int);
+  		logger->Iinp[loc] = va_arg(ap, int);
+  		loc++;
   	}
 
   }
@@ -71,22 +93,21 @@ void armpl_logging_leave(armpl_logging_struct *logger)
 
   while (logger->ts_end.tv_nsec - logger->ts_start.tv_nsec < 0 ) { logger->ts_end.tv_nsec+=1000000000; logger->ts_end.tv_sec-=1;}
   while (logger->ts_end.tv_nsec - logger->ts_start.tv_nsec > 1000000000 ) { logger->ts_end.tv_nsec-=1000000000; logger->ts_end.tv_sec+=1;}
-
+/*
   fprintf(fptr, "\t %d.%.9d\t",
   	logger->ts_end.tv_sec - logger->ts_start.tv_sec, logger->ts_end.tv_nsec - logger->ts_start.tv_nsec);
-
+*/
   if (logger->numIargs > 0)
   {
   	for (i = 0; i<logger->numIargs; i++)
-  		fprintf(fptr, "%d ", logger->Iinp[i]);
+  		fprintf(fptr, "%ld ", (long) logger->Iinp[i]);
   }
   if (logger->numCargs > 0)
   {
   	for (i = 0; i<logger->numCargs; i++)
   		fprintf(fptr, "%c ", logger->Cinp[i]);
   }
-
-  if (logger->numIargs > 0) free(logger->Iinp);
+  if (logger->numIargs > 1) free(logger->Iinp);
   if (logger->numCargs > 0) free(logger->Cinp);
 
   fprintf(fptr, "\n");

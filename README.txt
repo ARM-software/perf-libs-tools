@@ -1,5 +1,5 @@
 ================================================================================
-perf-libs-tools          Copyright 2017 Arm Limited          All rights reserved
+perf-libs-tools          Copyright 2017-8 Arm Limited        All rights reserved
 ================================================================================
 
 Tools to support Arm Performance Libraries
@@ -24,7 +24,7 @@ Compiling
 ---------
 
 1) Ensure that you are using the latest version of the logging library to match 
-   your build of Arm Performance Libraries.  This version matches 18.0.
+   your build of Arm Performance Libraries.  This version matches 18.2.
 
 2) From this top level directory type "make".
 
@@ -38,7 +38,7 @@ Usage
 
        export LD_PRELOAD=$PWD/lib/libarmpl-summarylog.so
 
-2) When you building your application ensure that you are linking in 
+2) When you are building your application ensure that you are linking in 
    the shared library (e.g. libarmpl_lp64_mp.so) 
    rather than the static library (e.g. libarmpl_lp64_mp.a).
 
@@ -102,6 +102,11 @@ need to
 	cd tools
 
 before following the instructions below.
+
+---Overall library usage---
+
+./process-components.py <input files>
+     This produces summary information about all library calls made
 
 ---DGEMM calls---
 

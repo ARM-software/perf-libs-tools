@@ -42,26 +42,29 @@ void armpl_summary_exit()
 
 /* Routine called at start of ARMPL function to record details of function call into the logger structure */
 
-void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numIinps, int numCinps, ...)
+void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numVinps, int numIinps, int numCinps, int dimension)
 {
-  int i;
-  va_list ap;
+  int totToStore;
   static int firsttime=1;
-  
   if (1==firsttime) 
   {
-  	armpl_enable_summary_list();
   	firsttime = 0;
+  	armpl_enable_summary_list();
   }
 
   sprintf(logger->NAME, "%s", FNC);
 
-  va_start(ap, numCinps);
-
   logger->numIargs = numIinps;
+  logger->numVargs = numVinps;
   logger->numCargs = numCinps;
 
-  va_end(ap);
+  totToStore = logger->numIargs;
+  if (logger->numVargs>0) totToStore += logger->numVargs*dimension+1;
+
+  if (totToStore>0)
+  {
+  	logger->Iinp = malloc(sizeof(int)*totToStore);
+  }
 
   clock_gettime(CLOCK_MONOTONIC, &logger->ts_start);
   return;
@@ -71,11 +74,11 @@ void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numI
 
 void armpl_logging_leave(armpl_logging_struct *logger, ...)
 {
-  int i, found;
+  int i, j, dimension=0, loc=0, found;
   static int firsttime=1;
   static FILE *fptr;
   armpl_lnkdlst_t *listEntry = listHead;
-  int stringLen;
+  int stringLen, totToStore;
   char *inputString;
   va_list ap;
   clock_gettime(CLOCK_MONOTONIC, &logger->ts_end);
@@ -89,13 +92,35 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
 
   va_start(ap, logger);
     
-  if (logger->numIargs>0)
-  {
-  	logger->Iinp = malloc(sizeof(int)*logger->numIargs);
+  if (logger->numVargs>0)
+  	dimension = va_arg(ap, int);
 
+  totToStore = logger->numIargs;
+  if (logger->numVargs>0) totToStore += logger->numVargs*dimension+1;
+
+  if (totToStore>0)
+  {
+  	loc=0;
+
+        if (logger->numVargs>0)
+        {
+		logger->Iinp[loc] = dimension;
+		loc++;
+	
+	  	for (i = 0; i<logger->numVargs; i++)
+	  	{
+	  		int *dataPtr = va_arg(ap, int*);
+	  		for (j = 0; j<dimension; j++)
+  			{
+		  		logger->Iinp[loc] = dataPtr[j];
+		  		loc++;
+		  	}
+  		}
+  	}
   	for (i = 0; i<logger->numIargs; i++)
   	{
-  		logger->Iinp[i] = va_arg(ap, int);
+  		logger->Iinp[loc] = va_arg(ap, int);
+  		loc++;
   	}
 
   }
@@ -115,13 +140,12 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
 
   /* Build delimited sting of inputs */
   	/* string length of 12 digits per integer, 1 character per char, add 1 extra each for delimiter, plus headroom at end */
-  stringLen = logger->numIargs*13+logger->numCargs*2+2;
+  stringLen = totToStore*13+logger->numCargs*2+2;
   inputString = malloc(stringLen*sizeof(char));
-  if (logger->numIargs > 0)
+  if (totToStore > 0)
   {
-  	for (i = 0; i<logger->numIargs; i++)
+  	for (i = 0; i<totToStore; i++)
   	{
-/*  		fprintf(stderr, "%d %d \n", i, logger->Iinp[i]);*/
   		sprintf(&inputString[i*13], " %12d", logger->Iinp[i]);
   	}
   }
@@ -130,7 +154,7 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
   	for (i = 0; i<logger->numCargs; i++)
   		sprintf(&inputString[logger->numIargs*13+2*i], " %c", logger->Cinp[i]);
   }
-  sprintf(&inputString[logger->numIargs*13+2*logger->numCargs], " ");
+  sprintf(&inputString[totToStore*13+2*logger->numCargs], " ");
   
   /* Check if routine is in list already */
   found=0;
@@ -211,7 +235,7 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
   listEntry->callCount++;
   listEntry->timeTotal += logger->ts_end.tv_sec - logger->ts_start.tv_sec + 1.0e-9*(logger->ts_end.tv_nsec - logger->ts_start.tv_nsec);
 
-  if (logger->numIargs > 0) free(logger->Iinp);
+  if (logger->numIargs > 1) free(logger->Iinp);
   if (logger->numCargs > 0) free(logger->Cinp);
 }
 

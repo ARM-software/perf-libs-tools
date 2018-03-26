@@ -33,7 +33,7 @@ typedef struct armpl_logging_td
 #ifdef __cplusplus
 extern "C" {
 #endif
-void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numIinps, int numCinps, ...);
+void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numVinps, int numIinps, int numCinps, ...);
 void armpl_logging_leave(armpl_logging_struct *logger);
 void armpl_set_value_int(const int *input);
 int armpl_get_value_int(void);

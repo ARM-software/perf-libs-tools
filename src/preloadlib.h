@@ -20,6 +20,9 @@
 #include "summary.h"
 #endif
 
+#define fftwplan fftwf_plan
+typedef struct fftwf_plan_s *fftwf_plan;
+
 /* ------------------------------------------------------------------ */
 
 /* All lines containing _ARMPL_INT_T or INTEGER64 get          _ARMPL_INT_T
@@ -40,6 +43,10 @@
   typedef int armpl_strlen_t;              /* _ARMPL_INT_T */
 #endif /* ! INTEGER64 */
 #endif /* _ARMPL_INT_T */
+#define armpl_int_t_c armpl_int_t
+#define armpl_int_t_c_d armpl_int_t
+#define armpl_int_t_N armpl_int_t*
+#define armpl_int_v armpl_int_t*
 
 /* A complex datatype for use by the C interfaces to ARMPL routines */
 #ifndef _ARMPL_ARMPL_SINGLECOMPLEX_T
@@ -55,7 +62,6 @@ typedef struct
 #endif /* !defined(_ARMPL_ARMPL_SINGLECOMPLEX_T) */
 
 /* ------------------------------------------------------------------ */
-
 #include "armpl.h"
 
 #endif

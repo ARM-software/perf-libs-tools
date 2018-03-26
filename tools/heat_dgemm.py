@@ -40,7 +40,8 @@ def main(args=None):
 
 def generate_heatmap(args):
     
-
+# The data file is in the format 2 * (N cols x N rows of ints) 2 rows of 5 ints, padded to N with 0
+# follwed by 2 * (N cols x N rows of floats)
     if (args.inFile) :
         a = np.loadtxt(args.inFile)
     else :
@@ -48,19 +49,23 @@ def generate_heatmap(args):
         a = np.loadtxt('tools/EXAMPLES/armpl-example.dgemm')
 
     maxvala = a.max()
-#    print maxvala
+    print maxvala
+    ncols = a.shape[1]
+    print "ncols",ncols
     
     b = np.zeros_like(a)
-    for i in range (0, 5):
-        for j in range (0, 5):
-            b[i][j] = a[i+12][j]
-            b[i+5][j] = a[i+17][j]
+    step1 = (2 * ncols) + 2
+    step2 = (3 * ncols) + 2
+    for i in range (0, ncols):
+        for j in range (0, ncols):
+            b[i][j] = a[i+step1][j]
+            b[i+ncols][j] = a[i+step2][j]
     
     maxvalb = b.max()
-#    print maxvalb
+    print maxvalb
 #    a = a
-    for i in range (0, 5):
-        for j in range (0, 5):
+    for i in range (0, ncols):
+        for j in range (0, ncols):
             b[i][j] = b[i][j]/maxvalb*maxvala
 #    print b
    
@@ -74,42 +79,43 @@ def generate_heatmap(args):
     plt.xlabel('K (10^x))')
     plt.ylabel('M (10^y))')
     plt.title("A-shape - count")
-    plt.imshow(a[0:5], cmap='gist_heat', interpolation='nearest', origin='lower', extent=(0.0,5.0,0.0,5.0), aspect='equal')
+    plt.imshow(a[0:ncols], cmap='gist_heat', interpolation='nearest', origin='lower', extent=(0.0,ncols,0.0,ncols), aspect='equal')
 #    plt.colorbar()
 
     plt.subplot(232)
     plt.xlabel('N (10^x))')
     plt.ylabel('K (10^y))')
     plt.title("B-shape - count")
-    plt.imshow(a[5:10], cmap='gist_heat', interpolation='nearest', origin='lower', extent=(0.0,5.0,0.0,5.0), aspect='equal')
+    plt.imshow(a[ncols:2*ncols], cmap='gist_heat', interpolation='nearest', origin='lower', extent=(0.0,ncols,0.0,ncols), aspect='equal')
 
     plt.subplot(234)
     plt.xlabel('K (10^x))')
     plt.ylabel('M (10^y))')
     plt.title("A-shape - time")
-    plt.imshow(b[0:5], cmap='gist_heat', interpolation='nearest', origin='lower', extent=(0.0,5.0,0.0,5.0), aspect='equal')
+    plt.imshow(b[0:ncols], cmap='gist_heat', interpolation='nearest', origin='lower', extent=(0.0,ncols,0.0,ncols), aspect='equal')
 #    plt.colorbar()
 
     plt.subplot(235)
     plt.xlabel('N (10^x))')
     plt.ylabel('K (10^y))')
     plt.title("B-shape - time")
-    plt.imshow(b[5:10], cmap='gist_heat', interpolation='nearest', origin='lower', extent=(0.0,5.0,0.0,5.0), aspect='equal')
+    plt.imshow(b[ncols:2*ncols], cmap='gist_heat', interpolation='nearest', origin='lower', extent=(0.0,ncols,0.0,ncols), aspect='equal')
     
 
-    pt_tot = np.sum(a[0:5])
-    nn_tot = a[10][0]/pt_tot*100.0
-    nt_tot = a[10][1]/pt_tot*100.0
-    tn_tot = a[10][2]/pt_tot*100.0
-    tt_tot = a[10][3]/pt_tot*100.0
+    pt_tot = np.sum(a[0:ncols])
+    ncols2 = 2 * ncols
+    nn_tot = a[ncols2][0]/pt_tot*100.0
+    nt_tot = a[ncols2][1]/pt_tot*100.0
+    tn_tot = a[ncols2][2]/pt_tot*100.0
+    tt_tot = a[ncols2][3]/pt_tot*100.0
 
 #    print b[0:5]
-    pt_t_tot = np.sum(b[0:5])
+    pt_t_tot = np.sum(b[0:ncols])
 #    print pt_t_tot
-    nn_t_tot = a[11][0]/maxvalb*maxvala/pt_t_tot*100.0
-    nt_t_tot = a[11][1]/maxvalb*maxvala/pt_t_tot*100.0
-    tn_t_tot = a[11][2]/maxvalb*maxvala/pt_t_tot*100.0
-    tt_t_tot = a[11][3]/maxvalb*maxvala/pt_t_tot*100.0
+    nn_t_tot = a[ncols2+1][0]/maxvalb*maxvala/pt_t_tot*100.0
+    nt_t_tot = a[ncols2+1][1]/maxvalb*maxvala/pt_t_tot*100.0
+    tn_t_tot = a[ncols2+1][2]/maxvalb*maxvala/pt_t_tot*100.0
+    tt_t_tot = a[ncols2+1][3]/maxvalb*maxvala/pt_t_tot*100.0
 
 #    print pt_t_tot, nn_t_tot, nt_t_tot, tn_t_tot, tt_t_tot
 

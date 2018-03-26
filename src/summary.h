@@ -21,6 +21,7 @@ typedef struct armpl_logging_td
 {
   char NAME[32];
   int numIargs;
+  int numVargs;
   int numCargs;
   struct timespec ts_start;
   struct timespec ts_end;
@@ -46,7 +47,7 @@ typedef struct armpl_lnkd_lst {
 extern "C" {
 #endif
 void armpl_summary_exit();
-void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numIinps, int numCinps, ...);
+void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numVinps, int numIinps, int numCinps, int dimension);
 void armpl_logging_leave(armpl_logging_struct *logger, ...);
 int armpl_get_value_int(void);
 void armpl_enable_summary_list();
