@@ -28,7 +28,7 @@ do
 #	echo $stemroutine >> $OUTFILE
 	for routine in s$stemroutine d$stemroutine c$stemroutine z$stemroutine
 	do
-		grep $routine $TMPFILE |wc -l >> $OUTFILE
+		grep $routine $TMPFILE | awk '{print $4}' | awk -v bsum=0.0 '{ bsum += $1 } END { print bsum }' >> $OUTFILE
 		grep $routine $TMPFILE | awk '{print $4 " " $6}' | awk -v sum=0.0 '{ sum += $1 * $2 } END { print sum }' >> $OUTFILE
 	done
 done

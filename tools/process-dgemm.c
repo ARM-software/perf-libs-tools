@@ -36,16 +36,6 @@ int main(int argc, char** argv)
 	int funcNameID = 0;
 	int fnameArg = 1;
 
-  /*
-  	data[0] = M;
-  	data[1] = N;
-  	data[2] = K;
-  	data[3] = TRANSA;
-  	data[4] = TRANSB;
-  	data[5] = LDA>M;
-  	data[6] = LDB>N;
-  */
-
 /* The generated file is read by numpy which expects the same number of elements in each line, and the */
 /* shortest line is 5 (which can be padded with zero if line length is greater). */
 #define MIN_COLS 5
@@ -107,7 +97,6 @@ int main(int argc, char** argv)
 	maxdim = 0;
 	for (i = fnameArg; i < argc; i++) {
 		snprintf(searchComStr,searchComStrLenTotal-1,SEARCH_STR,funcNames[funcNameID],argv[i]);
-		/*printf ("Running command|%s|\n",searchComStr); */
 		
 		/* Run search command 1st time and get access to return results to get metrics */
 		fp = popen(searchComStr,"r");
@@ -170,13 +159,11 @@ int main(int argc, char** argv)
 			ra = (int)(log10((float)(M)));
 			cb = (int)(log10((float)(N)));
 			ca = rb = (int)(log10((float)(K)));
-			/*printf("M=%5d K=%5d N=%5d     ra=%d ca=%d  rb=%d cb=%d   <%d>  <%d>\n", M, K, N, ra, ca, rb, cb, (ra+5*ca)*NDATA+0, (rb+5*cb)*NDATA+1);*/
 			data[(ncols*ra+ca)*NDATA+0]+=nCalls;
 			data[(ncols*rb+cb)*NDATA+1]+=nCalls;
 			
 			fdata[(ncols*ra+ca)*NDATA+0]+=cputime*nCalls;
 			fdata[(ncols*rb+cb)*NDATA+1]+=cputime*nCalls;
-			/*printf("TA=%c TB=%c\n", TRANSA, TRANSB);*/
 			if (TRANSA=='t' || TRANSA=='T') 
 			{	
 				if (TRANSB=='t' || TRANSB=='T') 

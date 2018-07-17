@@ -24,7 +24,7 @@ Compiling
 ---------
 
 1) Ensure that you are using the latest version of the logging library to match 
-   your build of Arm Performance Libraries.  This version matches 18.2.
+   your build of Arm Performance Libraries.  This version matches 18.4.0.
 
 2) From this top level directory type "make".
 
@@ -105,8 +105,24 @@ before following the instructions below.
 
 ---Overall library usage---
 
-./process-components.py <input files>
-     This produces summary information about all library calls made
+     This produces high-level summary information about all library calls made
+
+
+./process_summary.py <input files>
+     This produces a information about all library calls made.  A high-level 
+     summary is returned, folllowed by break-downs of all the calls to each 
+     library component (BLAS, LAPACK, FFT).  
+     
+     For FFTW calls this data also matches planning and execution stages 
+     enabling detailed profliing of fftw_execute() calls with only a pointer.
+     
+     An additional file generated is the BLAS summary data, previously 
+     produced by "./process-blas.sh", and to be fed into "./blas_usage.py", see
+     below.
+     
+    Input: One or more /tmp/armplsummary_<pid>.apl files.
+    Output: <text> and /tmp/armpl.blas
+
 
 ---DGEMM calls---
 
@@ -134,9 +150,14 @@ before following the instructions below.
        The pie charts show the proportion of calls/time for the given transpose 
        options for matrices A and B.
 
+    Input: /tmp/armpl.dgemm
+    Output: A matplotlib window showing usage.
+
 ---BLAS calls---
 
 ./process-blas.sh
+    DEPRECATED -- use "./process-summary.py" instead
+
     This produces summary information about BLAS calls made in an application.
     
     Input: One or more /tmp/armplsummary_<pid>.apl files.
@@ -173,4 +194,7 @@ before following the instructions below.
         Useful additional option include "-x" to exclude routines that are never 
         called and "-n" to normalise time taken against the most expensive 
         routine.
+
+    Input: /tmp/armpl.blas.
+    Output: A matplotlib window showing usage.
 
