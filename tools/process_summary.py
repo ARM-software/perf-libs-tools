@@ -81,7 +81,9 @@ def logFFT(readline, fftNames, fftLens, fftCnts, fftHowmany, fftTimes, fftPlanPt
   elif (
         routine=="fftw_plan_many_dft" or routine=="fftw_plan_many_dft_c2r" or routine=="fftw_plan_many_dft_r2c" or 
         routine=="dfftw_plan_many_dft" or routine=="dfftw_plan_many_dft_c2r" or routine=="dfftw_plan_many_dft_r2c" or 
+        routine=="dfftw_plan_many_dft_" or routine=="dfftw_plan_many_dft_c2r_" or routine=="dfftw_plan_many_dft_r2c_" or 
         routine=="sfftw_plan_many_dft" or routine=="sfftw_plan_many_dft_c2r" or routine=="sfftw_plan_many_dft_r2c" or 
+        routine=="sfftw_plan_many_dft_" or routine=="sfftw_plan_many_dft_c2r_" or routine=="sfftw_plan_many_dft_r2c_" or 
         routine=="fftwf_plan_many_dft" or routine=="fftwf_plan_many_dft_c2r" or routine=="fftwf_plan_many_dft_r2c") :
     plan = int(0)
     nFFTs = int(1)  #### implemented through howmany for fftw interface
@@ -89,11 +91,11 @@ def logFFT(readline, fftNames, fftLens, fftCnts, fftHowmany, fftTimes, fftPlanPt
     fftLen = [int(readline[8])]
     if (int(readline[7])>1) :
        for index in range(1,int(readline[7])) :
-          fftLen = int(readline[7+index])
+          fftLen.append(int(readline[7+index]))
     fftHowmany_sing = int(readline[8+int(readline[7])])  # advance by the number of dimensions
     fftPlanPtrs.append([int(readline[-1]),routine,[-1,-1,-1]])
     indexStore=1
-  elif (routine=="fftw_plan_dft_3d" or routine=="fftwf_plan_dft_3d" or routine=="dfftw_plan_dft_3d" or routine=="sfftw_plan_dft_3d") :
+  elif (routine=="fftw_plan_dft_3d" or routine=="fftwf_plan_dft_3d" or routine=="dfftw_plan_dft_3d_" or routine=="sfftw_plan_dft_3d_") :
     plan = int(0)
     nFFTs = int(1)  #### implemented through howmany for fftw interface
     fftLen = [int(readline[7]),int(readline[8]),int(readline[9])]
@@ -103,8 +105,10 @@ def logFFT(readline, fftNames, fftLens, fftCnts, fftHowmany, fftTimes, fftPlanPt
   elif (
         routine=="fftw_execute_dft" or routine=="fftw_execute_dft_r2c" or routine=="fftw_execute_dft_c2r" or
         routine=="dfftw_execute_dft" or routine=="dfftw_execute_dft_r2c" or routine=="dfftw_execute_dft_c2r" or
+        routine=="dfftw_execute_dft_" or routine=="dfftw_execute_dft_r2c_" or routine=="dfftw_execute_dft_c2r_" or
         routine=="sfftw_execute_dft" or routine=="sfftw_execute_dft_r2c" or routine=="sfftw_execute_dft_c2r" or
-        routine=="fftwf_execute_dft" or routine=="fftwf_execute_dft_r2c" or routine=="fftwf_execute_dft_c2r") :
+        routine=="sfftw_execute_dft_" or routine=="sfftw_execute_dft_r2c_" or routine=="sfftw_execute_dft_c2r_" or
+        routine=="fftwf_execute" or routine=="fftwf_execute_dft" or routine=="fftwf_execute_dft_r2c" or routine=="fftwf_execute_dft_c2r") :
     # add to list of executions for processing later, then return
     # note we can't do this yet as the plans may not have been previously in the file at this point
     fftExecPtrs.append([int(readline[7]),int(readline[3]),float(readline[5])])
@@ -517,7 +521,7 @@ def process_components():
   
     # Printing without howmany info
     for fnNum in range(0,len(fftNames)) :
-       if (fftNames[fnNum].startswith("fftw")) :
+       if (fftNames[fnNum].find("fftw") > -1) :
           # convert to a tuple for sorting
           unorderedTuple = zip(fftLens[fnNum], fftCnts[fnNum], fftTimes[fnNum], fftHowmany[fnNum])
           orderedTuple = sorted(unorderedTuple, key=lambda field: field[0])
@@ -529,7 +533,7 @@ def process_components():
     print " ...of which the breakdown by 'howmany' cases shows:"
     # Printing with howmany info
     for fnNum in range(0,len(fftNames)) :
-       if (fftNames[fnNum].startswith("fftw")) :
+       if (fftNames[fnNum].find("fftw") > -1) :
           # convert to a tuple for sorting
           unorderedTuple = zip(fftLens[fnNum], fftCnts[fnNum], fftTimes[fnNum], fftHowmany[fnNum])
           orderedTuple = sorted(unorderedTuple, key=lambda field: field[0])

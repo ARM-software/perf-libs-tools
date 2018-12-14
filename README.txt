@@ -24,7 +24,7 @@ Compiling
 ---------
 
 1) Ensure that you are using the latest version of the logging library to match 
-   your build of Arm Performance Libraries.  This version matches 18.4.0.
+   your build of Arm Performance Libraries.  This version matches 19.0.
 
 2) From this top level directory type "make".
 
