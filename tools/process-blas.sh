@@ -16,9 +16,9 @@ BLAS1="rotg_ rotmg_ rot_ rotm_ swap_ scal_ copy_ axpy_ dot_ dotu_ dotc_ nrm2_ as
 BLAS2="gemv_ gbmv_ hemv_ hbmv_ hpmv_ symv_ sbmv_ spmv_ trmv_ tbmv_ tpmv_ trsv_ tbsv_ tpsv_ ger_ geru_ gerc_ her_ hpr_ her2_ hpr2_ syr_ spr_ syr2_ spr2_"
 BLAS3="gemm_ symm_ hemm_ syrk_ herk_ syr2k_ her2k_ trmm_ trsm_"
 
-
-TMPFILE=/tmp/.inp-$USER
-OUTFILE=/tmp/armpl.blas
+: "${TMPDIR:=/tmp}"
+TMPFILE=${TMPDIR}/.inp-$USER
+OUTFILE=${TMPDIR}/armpl.blas
 
 cat $* > $TMPFILE
 rm -f $OUTFILE

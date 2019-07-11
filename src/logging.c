@@ -5,6 +5,7 @@
 */
 
 #include "logging.h"
+#include "string.h"
 
 int unsafe_val=0;
 FILE *unsafe_fptr;
@@ -83,8 +84,13 @@ void armpl_logging_leave(armpl_logging_struct *logger)
 
   if (firsttime==1)
   {
-  	char fname[32];
-  	sprintf(fname, "/tmp/armpllog_%.5d.apl", armpl_get_value_int());
+	const char* tmpdir = getenv("TMPDIR");
+	if (!tmpdir)
+	{
+		tmpdir = "/tmp";
+	}
+	char *fname = calloc(strlen(tmpdir)+strlen("/armpllog_NNNNN.apl")+1,sizeof(char));
+        sprintf(fname, "%s/armpllog_%.5d.apl", tmpdir, armpl_get_value_int());
 
   	fptr = armpl_open_logging_file(fname);
   }
