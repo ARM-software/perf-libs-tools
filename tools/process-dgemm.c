@@ -193,8 +193,14 @@ int main(int argc, char** argv)
 	}
 
 	/* Open file for output */
-	char *outFname = calloc(strlen("/tmp/armpl.")+strlen(funcNames[funcNameID])+1,sizeof(char));
-	strcat(outFname,"/tmp/armpl.");
+	const char* tmpdir = getenv("TMPDIR");
+	if (!tmpdir)
+	{
+		tmpdir = "/tmp";
+	}
+	char *outFname = calloc(strlen(tmpdir)+strlen("/armpl.")+strlen(funcNames[funcNameID])+1,sizeof(char));
+	strcat(outFname,tmpdir);
+	strcat(outFname,"/armpl.");
 	strcat(outFname,funcNames[funcNameID]);
 	fptr = fopen(outFname, "w");
 	if (fptr == NULL) {

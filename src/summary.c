@@ -16,11 +16,16 @@ void armpl_summary_exit()
   armpl_lnkdlst_t *thisEntry = listHead;
   armpl_lnkdlst_t *nextEntry = listHead;
   FILE *fptr;
-  char fname[64];
   static int firsttime=0;
   
   /* Generate a "unique" filename for the output */
-  sprintf(fname, "/tmp/armplsummary_%.5d.apl", armpl_get_value_int());
+  const char* tmpdir = getenv("TMPDIR");
+  if (!tmpdir)
+  {
+      tmpdir = "/tmp";
+  }
+  char *fname = calloc(strlen(tmpdir)+strlen("/armplsummary_NNNNN.apl")+1,sizeof(char));
+  sprintf(fname, "%s/armplsummary_%.5d.apl", tmpdir, armpl_get_value_int());
   fptr = fopen(fname, "w");
 
   while (NULL != listEntry)

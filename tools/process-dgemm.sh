@@ -21,7 +21,8 @@ then
 	echo "  $ gcc -o Process-dgemm process-dgemm.c"
 fi
 
-TMPFILE=/tmp/.inp-$USER
+: "${TMPDIR:=/tmp}"
+TMPFILE=${TMPDIR}/.inp-$USER
 
 rm -f $TMPFILE
 for file in $*

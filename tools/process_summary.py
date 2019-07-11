@@ -598,7 +598,8 @@ def process_components():
   #####
   
   if (len(blasNames[0])+len(blasNames[1])+len(blasNames[2])>0) :
-     fname = '/tmp/armpl.blas'
+     tmpdir = os.getenv('TMPDIR','/tmp')
+     fname = tmpdir + '/armpl.blas'
      outputfile = open(fname, 'w')
 
      types="sdcz"
