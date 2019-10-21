@@ -18,10 +18,28 @@ void armpl_summary_exit()
   FILE *fptr;
   char fname[64];
   static int firsttime=0;
+  struct timespec armpl_progstop;
+  double printingtime;
+  char *USERENV=NULL, name_root[64];
+
+  /* Stop the program timer */
+  clock_gettime(CLOCK_MONOTONIC, &armpl_progstop);
+  while (armpl_progstop.tv_nsec - armpl_progstart.tv_nsec < 0 ) { armpl_progstop.tv_nsec+=1000000000; armpl_progstop.tv_sec-=1;}
+  while (armpl_progstop.tv_nsec - armpl_progstart.tv_nsec > 1000000000 ) { armpl_progstop.tv_nsec-=1000000000; armpl_progstop.tv_sec+=1;}
+
   
   /* Generate a "unique" filename for the output */
-  sprintf(fname, "/tmp/armplsummary_%.5d.apl", armpl_get_value_int());
+  USERENV = getenv("ARMPL_SUMMARY_FILEROOT");
+  if (USERENV!=NULL && strlen(USERENV)>1) 
+  	sprintf(name_root, "%s", USERENV);
+  else
+  	sprintf(name_root, "/tmp/armplsummary_");
+  sprintf(fname, "%s%.5d.apl", name_root, armpl_get_value_int());
   fptr = fopen(fname, "w");
+
+  fprintf(fptr, "Routine: main  nCalls: 1  Total_time %12.6e nCalls: 1  Total_time %12.6e \n", 
+  	armpl_progstop.tv_sec - armpl_progstart.tv_sec + 1.0e-9*(armpl_progstop.tv_nsec - armpl_progstart.tv_nsec), 
+  	armpl_progstop.tv_sec - armpl_progstart.tv_sec + 1.0e-9*(armpl_progstop.tv_nsec - armpl_progstart.tv_nsec));
 
   while (NULL != listEntry)
   {
@@ -29,13 +47,23 @@ void armpl_summary_exit()
   	nextEntry = listEntry->nextRoutine;
   	do
   	{
-  		fprintf(fptr, "Routine: %8s  nCalls: %6d  Mean_time %12.6e    Inputs: %s\n", thisEntry->routineName, listEntry->callCount, listEntry->timeTotal/listEntry->callCount, listEntry->inputsString);
+  		if (listEntry->callCount_top>0)
+  		{
+  			printingtime = listEntry->timeTotal_top/listEntry->callCount_top;
+  		} else {
+  			printingtime = 0.0;
+  		}
+  		fprintf(fptr, "Routine: %8s  nCalls: %6d  Mean_time %12.6e   nUserCalls: %6d  Mean_user_time: %12.6e   Inputs: %s\n", 
+  				thisEntry->routineName, listEntry->callCount, listEntry->timeTotal/listEntry->callCount, 
+  				listEntry->callCount_top, printingtime,
+  				listEntry->inputsString);
 		listEntry = listEntry->nextCase;
 	} while (NULL != listEntry);
 	
 	listEntry = nextEntry;
   }
 
+  fclose(fptr);
   printf("Arm Performance Libraries output summary stored in %s\n", fname);
   return;
 }
@@ -57,6 +85,14 @@ void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numV
   logger->numIargs = numIinps;
   logger->numVargs = numVinps;
   logger->numCargs = numCinps;
+  
+  if (toplevel_global==0)
+  {
+  	toplevel_global = 1;
+  	logger->topLevel = 1;
+  } else {
+  	logger->topLevel = 0;
+  }
 
   totToStore = logger->numIargs;
   if (logger->numVargs>0) totToStore += logger->numVargs*dimension+1;
@@ -75,7 +111,6 @@ void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numV
 void armpl_logging_leave(armpl_logging_struct *logger, ...)
 {
   int i, j, dimension=0, loc=0, found;
-  static int firsttime=1;
   static FILE *fptr;
   armpl_lnkdlst_t *listEntry = listHead;
   int stringLen, totToStore;
@@ -169,6 +204,8 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
 	
 	  	listEntry->callCount = 0;
 	  	listEntry->timeTotal = 0.0;
+	  	listEntry->callCount_top = 0;
+	  	listEntry->timeTotal_top = 0.0;
   } else if (listEntry->nextRoutine==NULL && 0==strcmp(listEntry->routineName, logger->NAME))
   {			/* first entry */
   		found=1;
@@ -197,6 +234,8 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
 	
 	  	listEntry->callCount = 0;
 	  	listEntry->timeTotal = 0.0;
+	  	listEntry->callCount_top = 0;
+	  	listEntry->timeTotal_top = 0.0;
 		listEntry->nextRoutine = NULL;
 		listEntry->nextCase = NULL;
   	}
@@ -223,6 +262,8 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
 
   			listEntry->callCount = 0;
   			listEntry->timeTotal = 0.0;
+  			listEntry->callCount_top = 0;
+  			listEntry->timeTotal_top = 0.0;
   			listEntry->nextCase = NULL;
   			break;
   		}
@@ -234,6 +275,14 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
   /* Now update totals for this routine */
   listEntry->callCount++;
   listEntry->timeTotal += logger->ts_end.tv_sec - logger->ts_start.tv_sec + 1.0e-9*(logger->ts_end.tv_nsec - logger->ts_start.tv_nsec);
+
+  /* Deal with top level calls */
+  if (1==logger->topLevel)
+  {
+  	listEntry->callCount_top++;
+  	listEntry->timeTotal_top += logger->ts_end.tv_sec - logger->ts_start.tv_sec + 1.0e-9*(logger->ts_end.tv_nsec - logger->ts_start.tv_nsec);
+  	toplevel_global = 0;
+  }
 
   if (logger->numIargs > 1) free(logger->Iinp);
   if (logger->numCargs > 0) free(logger->Cinp);
@@ -261,6 +310,8 @@ void armpl_enable_summary_list(void) {
     
 		listHead->nextRoutine = NULL;
 		listHead->nextCase = NULL;
+		
+		clock_gettime(CLOCK_MONOTONIC, &armpl_progstart);
 
 	}
 

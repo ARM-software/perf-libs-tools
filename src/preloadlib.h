@@ -47,6 +47,8 @@ typedef struct fftwf_plan_s *fftwf_plan;
 #define armpl_int_t_c_d armpl_int_t
 #define armpl_int_t_N armpl_int_t*
 #define armpl_int_v armpl_int_t*
+#define long_double long double
+#define long_long long long
 
 /* A complex datatype for use by the C interfaces to ARMPL routines */
 #ifndef _ARMPL_ARMPL_SINGLECOMPLEX_T

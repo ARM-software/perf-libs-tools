@@ -27,6 +27,7 @@ typedef struct armpl_logging_td
   struct timespec ts_end;
   int *Iinp;
   char *Cinp;
+  int topLevel;
 
 } armpl_logging_struct;
 
@@ -36,10 +37,16 @@ typedef struct armpl_lnkd_lst {
     char *inputsString;
     double timeTotal;
     int callCount;
+    double timeTotal_top;
+    int callCount_top;
     struct armpl_lnkd_lst *nextRoutine;
     struct armpl_lnkd_lst *nextCase;
 } armpl_lnkdlst_t;
-        
+
+struct timespec armpl_progstart;        
+
+/* Global variable for identifying top-level call */
+int toplevel_global;
 
 /* Prototypes for logging functions */
 

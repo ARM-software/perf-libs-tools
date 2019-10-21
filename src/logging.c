@@ -79,14 +79,22 @@ void armpl_logging_leave(armpl_logging_struct *logger)
   int i;
   static int firsttime=1;
   static FILE *fptr;
+  char *USERENV=NULL, name_root[64];
   clock_gettime(CLOCK_MONOTONIC, &logger->ts_end);
 
   if (firsttime==1)
   {
   	char fname[32];
-  	sprintf(fname, "/tmp/armpllog_%.5d.apl", armpl_get_value_int());
+  	/* Generate a "unique" filename for the output */
+  	USERENV = getenv("ARMPL_LOGING_FILEROOT");
+  	if (USERENV!=NULL && strlen(USERENV)>1) 
+  		sprintf(name_root, "%s", USERENV);
+  	else
+  		sprintf(name_root, "/tmp/armpllog_");
+  	sprintf(fname, "%s%.5d.apl", name_root, armpl_get_value_int());
 
   	fptr = armpl_open_logging_file(fname);
+  	firsttime=0;
   }
 
   fprintf(fptr, "%s   ", logger->NAME);

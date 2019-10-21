@@ -40,7 +40,7 @@ int main(int argc, char** argv)
 /* shortest line is 5 (which can be padded with zero if line length is greater). */
 #define MIN_COLS 5
 /* The search string used to grep through the file. Contains the %s to allow the filename to be inserted at runtime */
-#define SEARCH_STR "grep %s %s |awk '{print $2 \" \" $4 \" \" $6 \" \" $8 \" \" $9 \" \" $10 \" \" $11 \" \" $12 \" \" $13 \" \" $14 \" \" $15 \" \" $16}'"
+#define SEARCH_STR "grep %s %s |awk '{print $2 \" \" $4 \" \" $6 \" \" $12 \" \" $13 \" \" $14 \" \" $15 \" \" $16 \" \" $17 \" \" $18 \" \" $19 \" \" $20}'"
 
 	/* Check args */
 	if (argc < 2 || ( argc == 2 && (0==strcmp(argv[1],"-h") || 0==strcmp(argv[1],"--help")) ) ) {

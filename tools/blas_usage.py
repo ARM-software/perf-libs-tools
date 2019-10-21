@@ -86,7 +86,7 @@ def generate_blasplot(args):
     removalList = []
 
     for routine in BLAS1 :
- #       print routine, data[cnt], data[cnt+2], data[cnt+4], data[cnt+6]
+#        print routine, data[cnt], data[cnt+2], data[cnt+4], data[cnt+6]
         if (args.excludeZeroes) :
             zeroCnt = sum(data[cnt:cnt+7:2])
             if (zeroCnt < 1) :
@@ -112,7 +112,7 @@ def generate_blasplot(args):
         removalList = []
 
     for routine in BLAS2 :
- #       print routine, data[cnt], data[cnt+2], data[cnt+4], data[cnt+6]
+#        print routine, data[cnt], data[cnt+2], data[cnt+4], data[cnt+6]
         if (args.excludeZeroes) :
             zeroCnt = sum(data[cnt:cnt+7:2])
             if (zeroCnt < 1) :
@@ -136,7 +136,7 @@ def generate_blasplot(args):
         removalList = []
 
     for routine in BLAS3 :
- #       print routine, data[cnt], data[cnt+2], data[cnt+4], data[cnt+6]
+#        print routine, data[cnt], data[cnt+2], data[cnt+4], data[cnt+6]
         if (args.excludeZeroes) :
             zeroCnt = sum(data[cnt:cnt+7:2])
             if (zeroCnt < 1) :
@@ -332,6 +332,7 @@ def generate_blasplot(args):
 #        plt.legend(bbox_to_anchor=(1.01,1), loc="upper left")
 
 #    plt.tight_layout()
+    print 7
     plt.show()
     
 

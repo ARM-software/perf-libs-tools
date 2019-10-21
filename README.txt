@@ -1,5 +1,5 @@
 ================================================================================
-perf-libs-tools          Copyright 2017-8 Arm Limited        All rights reserved
+perf-libs-tools          Copyright 2017-9 Arm Limited        All rights reserved
 ================================================================================
 
 Tools to support Arm Performance Libraries
@@ -24,7 +24,10 @@ Compiling
 ---------
 
 1) Ensure that you are using the latest version of the logging library to match 
-   your build of Arm Performance Libraries.  This version matches 19.0.
+   your build of Arm Performance Libraries.  This version matches 19.3.  Note 
+   you can build using either GCC or Arm Compiler, however an Arm Performance 
+   Libraries or Arm Compiler module must have been loaded to add the correct 
+   directory containing 'armpl.h' to your path.
 
 2) From this top level directory type "make".
 
@@ -36,7 +39,7 @@ Usage
 
 1) Use LD_PRELOAD to pick-up the newly created logging library:
 
-       export LD_PRELOAD=$PWD/lib/libarmpl-summarylog.so
+     export LD_PRELOAD=$PWD/lib/libarmpl-summarylog.so
 
 2) When you are building your application ensure that you are linking in 
    the shared library (e.g. libarmpl_lp64_mp.so) 
@@ -47,13 +50,22 @@ Usage
    /tmp/armplsummary_<pid>.apl where <pid> is the process ID.
    Note an extra line is added to the output of your program reading 
    
-  Arm Performance Libraries output summary stored in /tmp/armplsummary_16776.apl 
+   Arm Performance Libraries output summary stored by default in files named
+  
+     /tmp/armplsummary_16776.apl 
+    
+  with the appropriate PID included.  The root of this can be modified using
+  the environment variable ARMPL_SUMMARY_FILEROOT.  
+
+     /tmp/armplsummary_16776.apl 
    
-   with the appropriate PID included.
+  with the appropriate PID included.  The root of this can be modified using
+  the environment variable ARMPL_SUMMARY_FILEROOT.
 
 Note we have also included the library "lib/libarmpl-logger.so" which is used in 
 the same way, however this gives much more verbose output producing an output 
-line for every single library call.
+line for every single library call.  The file root for output here is set
+using ARMPL_LOGGING_FILEROOT.
 
    
 Output
@@ -67,8 +79,12 @@ The output files generated list the following information:
 	Column 4 : <number of calls>
 	Column 5 : "Mean_time"
 	Column 6 : <mean time of this call>
-	Column 7 : "Inputs:"
-	Column 8 onwards : input parameters to routine, integers then characters
+	Column 7 : "nUserCalls:"
+	Column 8 : <number of top level calls>
+	Column 9 : "Mean_user_time:"
+	Column 10 : <mean time of this top-level call>
+	Column 11 : "Inputs:"
+	Column 12 onwards : input parameters to routine, integers then characters
 
 That is, at the end of the execution of a program a summary list is produced 
 itemizing each of the routines called, detailing the input cases that it has 
@@ -80,6 +96,9 @@ understanding the cases used.  It does mean certain input parameters, such as
 ALPHA and BETA for a DGEMM case, are missed, however this is an acceptable 
 situation for the automatic creation of a logging library.
 
+Note that we now provide two sets of timing results: inclusive and top-level.
+Typically users may call a routine such as DPOTRF, but internally they may 
+in turn call many other LAPACK or BLAS functions.  
 
 Tools
 -----
@@ -105,20 +124,20 @@ before following the instructions below.
 
 ---Overall library usage---
 
-     This produces high-level summary information about all library calls made
-
-
 ./process_summary.py <input files>
-     This produces a information about all library calls made.  A high-level 
+     This produces information about all library calls made.  A high-level 
      summary is returned, folllowed by break-downs of all the calls to each 
-     library component (BLAS, LAPACK, FFT).  
+     library component (BLAS, LAPACK, FFT).  This data is split into output
+     summarising both the total of calls and time spent in the function, and 
+     also the number and time spent in this function from just user-called 
+     invocations.
      
-     For FFTW calls this data also matches planning and execution stages 
+     For FFT calls this data also matches planning and execution stages 
      enabling detailed profliing of fftw_execute() calls with only a pointer.
      
      An additional file generated is the BLAS summary data, previously 
-     produced by "./process-blas.sh", and to be fed into "./blas_usage.py", see
-     below.
+     produced by "./process-blas.sh", which can be fed into "./blas_usage.py", 
+     see below.
      
     Input: One or more /tmp/armplsummary_<pid>.apl files.
     Output: <text> and /tmp/armpl.blas
@@ -127,7 +146,7 @@ before following the instructions below.
 ---DGEMM calls---
 
 ./process-dgemm.sh <input files>
-    This produces summary information about DGEMM calls made in an application.
+    This produces summary information about ?GEMM calls made in an application.
 
     Input: One or more /tmp/armplsummary_<pid>.apl files.
     Output: /tmp/armpl.dgemm
@@ -164,7 +183,8 @@ before following the instructions below.
     Output: /tmp/armpl.blas
 
 ./blas_usage.py
-    This visualizes the data from an armpl.blas file.
+    This visualizes the data from an armpl.blas file generated by 
+    'process_summary.py'.
     
     Usage: blas_usage.py [-h] [-l] [-n] [-x] [-i INFILE]
     Optional arguments:
@@ -198,3 +218,20 @@ before following the instructions below.
     Input: /tmp/armpl.blas.
     Output: A matplotlib window showing usage.
 
+
+Known issues
+------------
+
+* If being used with GCC it is necessary to remove the functions cdotc_, cdotu_, 
+  zdotc_ and zdotu_ from src/PROTOTYPES.  For convenience these are the first 
+  four lines of that file.
+
+* The top level call timings do not work when called from within a multithreaded 
+  environment.  Setting OMP_NUM_THREADS=1 is recommended for useful output from
+  perf-libs-tools.
+
+* For certain codes that create extortionate numbers of FFTW plans then it may 
+  be necessary to prevent trying to match plans with executes.  This situation 
+  would result in a significant, and worsening, run-time performance of the 
+  application.  This is not detailed here, but instructions can be made 
+  available upon request.
