@@ -24,6 +24,10 @@ fi
 TMPFILE=/tmp/.inp-$USER
 
 rm -f $TMPFILE
+rm -f ${TMPFILE}_d
+rm -f ${TMPFILE}_s
+rm -f ${TMPFILE}_z
+rm -f ${TMPFILE}_c
 for file in $*
 do
 	grep dgemm ${file} >> ${TMPFILE}_d

@@ -190,100 +190,102 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
   		sprintf(&inputString[logger->numIargs*13+2*i], " %c", logger->Cinp[i]);
   }
   sprintf(&inputString[totToStore*13+2*logger->numCargs], " ");
-  
-  /* Check if routine is in list already */
-  found=0;
-
-  listEntry = listHead;
-  if (listEntry->callCount==-1)		/* New list */
+  #pragma omp critical 
   {
-  		listEntry->routineName = malloc(sizeof(char)*strlen(logger->NAME)+1);
-	  	sprintf(listEntry->routineName, "%s", logger->NAME);
-	
-	  	listEntry->inputsString = inputString;
-	
-	  	listEntry->callCount = 0;
-	  	listEntry->timeTotal = 0.0;
-	  	listEntry->callCount_top = 0;
-	  	listEntry->timeTotal_top = 0.0;
-  } else if (listEntry->nextRoutine==NULL && 0==strcmp(listEntry->routineName, logger->NAME))
-  {			/* first entry */
-  		found=1;
-  } else {			/* Existing list */
-  	while (1)
-  	{
-  		if (0==strcmp(listEntry->routineName, logger->NAME))
-  		{
-  			found=1;
-  			break;
-  		} 
-  		if (NULL==listEntry->nextRoutine) break;
-  		listEntry = listEntry->nextRoutine;
+
+	/* Check if routine is in list already */
+	found=0;
+
+	listEntry = listHead;
+	if (listEntry->callCount==-1)		/* New list */
+	{
+			listEntry->routineName = malloc(sizeof(char)*strlen(logger->NAME)+1);
+			sprintf(listEntry->routineName, "%s", logger->NAME);
+		
+			listEntry->inputsString = inputString;
+		
+			listEntry->callCount = 0;
+			listEntry->timeTotal = 0.0;
+			listEntry->callCount_top = 0;
+			listEntry->timeTotal_top = 0.0;
+	} else if (listEntry->nextRoutine==NULL && 0==strcmp(listEntry->routineName, logger->NAME))
+	{			/* first entry */
+			found=1;
+	} else {			/* Existing list */
+		while (1)
+		{
+			if (0==strcmp(listEntry->routineName, logger->NAME))
+			{
+				found=1;
+				break;
+			} 
+			if (NULL==listEntry->nextRoutine) break;
+			listEntry = listEntry->nextRoutine;
+		}
+
+		/* else:  new routine */
+		if (0 == found) 
+		{
+			listEntry->nextRoutine = malloc(sizeof(armpl_lnkdlst_t));
+			listEntry = listEntry->nextRoutine;
+		
+			listEntry->routineName = malloc(sizeof(char)*strlen(logger->NAME)+1);
+			sprintf(listEntry->routineName, "%s", logger->NAME);
+			
+			listEntry->inputsString = inputString;
+		
+			listEntry->callCount = 0;
+			listEntry->timeTotal = 0.0;
+			listEntry->callCount_top = 0;
+			listEntry->timeTotal_top = 0.0;
+			listEntry->nextRoutine = NULL;
+			listEntry->nextCase = NULL;
+		}
 	}
 
-	  /* else:  new routine */
-  	if (0 == found) 
+	if (1 == found)
 	{
-		listEntry->nextRoutine = malloc(sizeof(armpl_lnkdlst_t));
-		listEntry = listEntry->nextRoutine;
+		/* Loop over current cases */
+		do
+		{
+			if (0 == strcmp(listEntry->inputsString, inputString))
+			{
+				found = 2;
+				break;
+			}
+			if (NULL != listEntry->nextCase)
+			{
+				listEntry = listEntry->nextCase;
+			} else {
+				listEntry->nextCase  = malloc(sizeof(armpl_lnkdlst_t));
+				listEntry = listEntry->nextCase;
+				
+				listEntry->inputsString = inputString;
+
+				listEntry->callCount = 0;
+				listEntry->timeTotal = 0.0;
+				listEntry->callCount_top = 0;
+				listEntry->timeTotal_top = 0.0;
+				listEntry->nextCase = NULL;
+				break;
+			}
+		} while (1);
 	
-  		listEntry->routineName = malloc(sizeof(char)*strlen(logger->NAME)+1);
-	  	sprintf(listEntry->routineName, "%s", logger->NAME);
-	  	
-	  	listEntry->inputsString = inputString;
-	
-	  	listEntry->callCount = 0;
-	  	listEntry->timeTotal = 0.0;
-	  	listEntry->callCount_top = 0;
-	  	listEntry->timeTotal_top = 0.0;
-		listEntry->nextRoutine = NULL;
-		listEntry->nextCase = NULL;
-  	}
+	}
+
+
+	/* Now update totals for this routine */
+	listEntry->callCount++;
+	listEntry->timeTotal += logger->ts_end.tv_sec - logger->ts_start.tv_sec + 1.0e-9*(logger->ts_end.tv_nsec - logger->ts_start.tv_nsec);
+
+	/* Deal with top level calls */
+	if (1==logger->topLevel)
+	{
+		listEntry->callCount_top++;
+		listEntry->timeTotal_top += logger->ts_end.tv_sec - logger->ts_start.tv_sec + 1.0e-9*(logger->ts_end.tv_nsec - logger->ts_start.tv_nsec);
+		toplevel_global = 0;
+	}
   }
-
-  if (1 == found)
-  {
-  	/* Loop over current cases */
-  	do
-  	{
-  		if (0 == strcmp(listEntry->inputsString, inputString))
-  		{
-  			found = 2;
-  			break;
-  		}
-  		if (NULL != listEntry->nextCase)
-  		{
-  			listEntry = listEntry->nextCase;
-  		} else {
-  			listEntry->nextCase  = malloc(sizeof(armpl_lnkdlst_t));
-  			listEntry = listEntry->nextCase;
-  			
-  			listEntry->inputsString = inputString;
-
-  			listEntry->callCount = 0;
-  			listEntry->timeTotal = 0.0;
-  			listEntry->callCount_top = 0;
-  			listEntry->timeTotal_top = 0.0;
-  			listEntry->nextCase = NULL;
-  			break;
-  		}
-  	} while (1);
-  
-  }
-
-
-  /* Now update totals for this routine */
-  listEntry->callCount++;
-  listEntry->timeTotal += logger->ts_end.tv_sec - logger->ts_start.tv_sec + 1.0e-9*(logger->ts_end.tv_nsec - logger->ts_start.tv_nsec);
-
-  /* Deal with top level calls */
-  if (1==logger->topLevel)
-  {
-  	listEntry->callCount_top++;
-  	listEntry->timeTotal_top += logger->ts_end.tv_sec - logger->ts_start.tv_sec + 1.0e-9*(logger->ts_end.tv_nsec - logger->ts_start.tv_nsec);
-  	toplevel_global = 0;
-  }
-
   if (logger->numIargs > 1) free(logger->Iinp);
   if (logger->numCargs > 0) free(logger->Cinp);
 }

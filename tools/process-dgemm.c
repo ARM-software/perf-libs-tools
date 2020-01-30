@@ -25,7 +25,7 @@ int main(int argc, char** argv)
 {
   int nrows, ncols, maxdim, i, j, LDA, LDB, LDC, M, N, K, ra, ca, rb, cb;
   long long int nn=0, nt=0, tn=0, tt=0, nCalls, dummy_l=0;
-  int *data;
+  long long int *data;
   float *fdata;
   char TRANSA, TRANSB, fstring[32];
   float cputime, tt_t=0.0, nn_t=0.0, nt_t=0.0, tn_t=0.0, dummy_f=0.0;  
@@ -139,8 +139,11 @@ int main(int argc, char** argv)
 	//printf("Nrows = %d\n",nrows);
 	//printf("Ncols = %d\n",ncols);
 
-	data = calloc((ncols*ncols)*NDATA, sizeof(int));
-	fdata = calloc((ncols*ncols)*NDATA, sizeof(int));
+	data = calloc((ncols*ncols)*NDATA, sizeof(&nCalls));
+	fdata = calloc((ncols*ncols)*NDATA, sizeof(&nCalls));
+
+
+	FILE* dgemm_log = fopen("/tmp/dgemm_record.log", "w");
   
 	/* Run search command 2nd time and get access to return results to get data */
 	for (i = fnameArg; i < argc; i++) {
@@ -151,6 +154,7 @@ int main(int argc, char** argv)
 			exit(1);
 		}
 		
+
 		/* Read the output a line at a time - output it. */
 		while (fgets(path, sizeof(path)-1, fp) != NULL) {
 			sscanf(path,"%s %lld %f %d %d %d %d %d %d %c %c", fstring, &nCalls, &cputime, &M, &N, &K, &LDA, &LDB, &LDC, &TRANSA, &TRANSB);
@@ -162,6 +166,8 @@ int main(int argc, char** argv)
 			data[(ncols*ra+ca)*NDATA+0]+=nCalls;
 			data[(ncols*rb+cb)*NDATA+1]+=nCalls;
 			
+			fprintf(dgemm_log, "%d %d %d %lld %f\n", M, N, K, nCalls, cputime);
+
 			fdata[(ncols*ra+ca)*NDATA+0]+=cputime*nCalls;
 			fdata[(ncols*rb+cb)*NDATA+1]+=cputime*nCalls;
 			if (TRANSA=='t' || TRANSA=='T') 
@@ -192,6 +198,8 @@ int main(int argc, char** argv)
 		pclose(fp);
 	}
 
+	fclose(dgemm_log);
+
 	/* Open file for output */
 	char *outFname = calloc(strlen("/tmp/armpl.")+strlen(funcNames[funcNameID])+1,sizeof(char));
 	strcat(outFname,"/tmp/armpl.");
@@ -204,14 +212,14 @@ int main(int argc, char** argv)
 	/* Print A-shape */
 	for (i=0; i<ncols; i++) {
 		for (j=0; j<ncols; j++) {
-			fprintf(fptr, "%d ", data[ncols*i*NDATA+(j*NDATA)]);
+			fprintf(fptr, "%lld ", data[ncols*i*NDATA+(j*NDATA)]);
 		}
 		fprintf(fptr,"\n");
 	}
 	/* Print B-shape */
 	for (i=0; i<ncols; i++) {
 		for (j=0; j<ncols; j++) {
-			fprintf(fptr, "%d ", data[ncols*i*NDATA+j*NDATA+1]);
+			fprintf(fptr, "%lld ", data[ncols*i*NDATA+j*NDATA+1]);
 		}
 		fprintf(fptr,"\n");
 	
