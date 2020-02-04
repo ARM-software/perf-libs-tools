@@ -4741,7 +4741,7 @@ void zfft3d(armpl_int_t mode, armpl_int_t l, armpl_int_t m, armpl_int_t n, armpl
 void zfft3dx(armpl_int_t mode, double scale, armpl_int_t ltrans, armpl_int_t inpl, armpl_int_t l, armpl_int_t m, armpl_int_t n, armpl_doublecomplex_t *x, armpl_doublecomplex_t *y, armpl_doublecomplex_t *comm, armpl_int_t *info);
 void zfft3dy(armpl_int_t mode, double scale, armpl_int_t inpl, armpl_int_t l, armpl_int_t m, armpl_int_t n, armpl_doublecomplex_t *x, armpl_int_t incx1, armpl_int_t incx2, armpl_int_t incx3, armpl_doublecomplex_t *y, armpl_int_t incy1, armpl_int_t incy2, armpl_int_t incy3, armpl_doublecomplex_t *comm, armpl_int_t lcomm, armpl_int_t *info);
 
-#include <xblas.h>
+//#include <xblas.h>
 
 #ifdef __cplusplus
 }
