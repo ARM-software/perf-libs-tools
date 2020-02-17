@@ -1635,6 +1635,24 @@ void cgeequb_(armpl_int_t *m, armpl_int_t *n, armpl_singlecomplex_t *a, armpl_in
 	real_cgeequb_( m, n, a, lda, r, c, rowcnd, colcnd, amax, info);
 	armpl_logging_leave(&logger, *m, *n, *lda, *info);
 }
+void cgees_(char *jobvs, char *sort, ARMPL_CGEES_SELECT select, armpl_int_t *n, armpl_singlecomplex_t *a, armpl_int_t *lda, armpl_int_t *sdim, armpl_singlecomplex_t *w, armpl_singlecomplex_t *vs, armpl_int_t *ldvs, armpl_singlecomplex_t *work, armpl_int_t *lwork, float *rwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "cgees_", 0, 7, 2, armpl_logging_var_dimension);
+	void (*real_cgees_)(char *jobvs, char *sort, ARMPL_CGEES_SELECT select, armpl_int_t *n, armpl_singlecomplex_t *a, armpl_int_t *lda, armpl_int_t *sdim, armpl_singlecomplex_t *w, armpl_singlecomplex_t *vs, armpl_int_t *ldvs, armpl_singlecomplex_t *work, armpl_int_t *lwork, float *rwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "cgees_");
+	real_cgees_( jobvs, sort, select, n, a, lda, sdim, w, vs, ldvs, work, lwork, rwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *sdim, *ldvs, *lwork, *bwork, *info, *jobvs, *sort);
+}
+void cgeesx_(char *jobvs, char *sort, ARMPL_CGEESX_SELECT select, char *sense, armpl_int_t *n, armpl_singlecomplex_t *a, armpl_int_t *lda, armpl_int_t *sdim, armpl_singlecomplex_t *w, armpl_singlecomplex_t *vs, armpl_int_t *ldvs, float *rconde, float *rcondv, armpl_singlecomplex_t *work, armpl_int_t *lwork, float *rwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "cgeesx_", 0, 7, 3, armpl_logging_var_dimension);
+	void (*real_cgeesx_)(char *jobvs, char *sort, ARMPL_CGEESX_SELECT select, char *sense, armpl_int_t *n, armpl_singlecomplex_t *a, armpl_int_t *lda, armpl_int_t *sdim, armpl_singlecomplex_t *w, armpl_singlecomplex_t *vs, armpl_int_t *ldvs, float *rconde, float *rcondv, armpl_singlecomplex_t *work, armpl_int_t *lwork, float *rwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "cgeesx_");
+	real_cgeesx_( jobvs, sort, select, sense, n, a, lda, sdim, w, vs, ldvs, rconde, rcondv, work, lwork, rwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *sdim, *ldvs, *lwork, *bwork, *info, *jobvs, *sort, *sense);
+}
 void cgeev_(char *jobvl, char *jobvr, armpl_int_t *n, armpl_singlecomplex_t *a, armpl_int_t *lda, armpl_singlecomplex_t *w, armpl_singlecomplex_t *vl, armpl_int_t *ldvl, armpl_singlecomplex_t *vr, armpl_int_t *ldvr, armpl_singlecomplex_t *work, armpl_int_t *lwork, float *rwork, armpl_int_t *info)
 {
 	armpl_logging_struct logger;
@@ -1940,6 +1958,24 @@ void cggbal_(char *job, armpl_int_t *n, armpl_singlecomplex_t *a, armpl_int_t *l
 	void (*real_cggbal_)(char *job, armpl_int_t *n, armpl_singlecomplex_t *a, armpl_int_t *lda, armpl_singlecomplex_t *b, armpl_int_t *ldb, armpl_int_t *ilo, armpl_int_t *ihi, float *lscale, float *rscale, float *work, armpl_int_t *info) = dlsym(RTLD_NEXT, "cggbal_");
 	real_cggbal_( job, n, a, lda, b, ldb, ilo, ihi, lscale, rscale, work, info);
 	armpl_logging_leave(&logger, *n, *lda, *ldb, *ilo, *ihi, *info, *job);
+}
+void cgges_(char *jobvsl, char *jobvsr, char *sort, ARMPL_CGGES_SELCTG selctg, armpl_int_t *n, armpl_singlecomplex_t *a, armpl_int_t *lda, armpl_singlecomplex_t *b, armpl_int_t *ldb, armpl_int_t *sdim, armpl_singlecomplex_t *alpha, armpl_singlecomplex_t *beta, armpl_singlecomplex_t *vsl, armpl_int_t *ldvsl, armpl_singlecomplex_t *vsr, armpl_int_t *ldvsr, armpl_singlecomplex_t *work, armpl_int_t *lwork, float *rwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "cgges_", 0, 9, 3, armpl_logging_var_dimension);
+	void (*real_cgges_)(char *jobvsl, char *jobvsr, char *sort, ARMPL_CGGES_SELCTG selctg, armpl_int_t *n, armpl_singlecomplex_t *a, armpl_int_t *lda, armpl_singlecomplex_t *b, armpl_int_t *ldb, armpl_int_t *sdim, armpl_singlecomplex_t *alpha, armpl_singlecomplex_t *beta, armpl_singlecomplex_t *vsl, armpl_int_t *ldvsl, armpl_singlecomplex_t *vsr, armpl_int_t *ldvsr, armpl_singlecomplex_t *work, armpl_int_t *lwork, float *rwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "cgges_");
+	real_cgges_( jobvsl, jobvsr, sort, selctg, n, a, lda, b, ldb, sdim, alpha, beta, vsl, ldvsl, vsr, ldvsr, work, lwork, rwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *ldb, *sdim, *ldvsl, *ldvsr, *lwork, *bwork, *info, *jobvsl, *jobvsr, *sort);
+}
+void cggesx_(char *jobvsl, char *jobvsr, char *sort, ARMPL_CGGESX_SELCTG selctg, char *sense, armpl_int_t *n, armpl_singlecomplex_t *a, armpl_int_t *lda, armpl_singlecomplex_t *b, armpl_int_t *ldb, armpl_int_t *sdim, armpl_singlecomplex_t *alpha, armpl_singlecomplex_t *beta, armpl_singlecomplex_t *vsl, armpl_int_t *ldvsl, armpl_singlecomplex_t *vsr, armpl_int_t *ldvsr, float *rconde, float *rcondv, armpl_singlecomplex_t *work, armpl_int_t *lwork, float *rwork, armpl_int_t *iwork, armpl_int_t *liwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "cggesx_", 0, 11, 4, armpl_logging_var_dimension);
+	void (*real_cggesx_)(char *jobvsl, char *jobvsr, char *sort, ARMPL_CGGESX_SELCTG selctg, char *sense, armpl_int_t *n, armpl_singlecomplex_t *a, armpl_int_t *lda, armpl_singlecomplex_t *b, armpl_int_t *ldb, armpl_int_t *sdim, armpl_singlecomplex_t *alpha, armpl_singlecomplex_t *beta, armpl_singlecomplex_t *vsl, armpl_int_t *ldvsl, armpl_singlecomplex_t *vsr, armpl_int_t *ldvsr, float *rconde, float *rcondv, armpl_singlecomplex_t *work, armpl_int_t *lwork, float *rwork, armpl_int_t *iwork, armpl_int_t *liwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "cggesx_");
+	real_cggesx_( jobvsl, jobvsr, sort, selctg, sense, n, a, lda, b, ldb, sdim, alpha, beta, vsl, ldvsl, vsr, ldvsr, rconde, rcondv, work, lwork, rwork, iwork, liwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *ldb, *sdim, *ldvsl, *ldvsr, *lwork, *iwork, *liwork, *bwork, *info, *jobvsl, *jobvsr, *sort, *sense);
 }
 void cggev_(char *jobvl, char *jobvr, armpl_int_t *n, armpl_singlecomplex_t *a, armpl_int_t *lda, armpl_singlecomplex_t *b, armpl_int_t *ldb, armpl_singlecomplex_t *alpha, armpl_singlecomplex_t *beta, armpl_singlecomplex_t *vl, armpl_int_t *ldvl, armpl_singlecomplex_t *vr, armpl_int_t *ldvr, armpl_singlecomplex_t *work, armpl_int_t *lwork, float *rwork, armpl_int_t *info)
 {
@@ -4124,6 +4160,24 @@ void dgeequb_(armpl_int_t *m, armpl_int_t *n, double *a, armpl_int_t *lda, doubl
 	real_dgeequb_( m, n, a, lda, r, c, rowcnd, colcnd, amax, info);
 	armpl_logging_leave(&logger, *m, *n, *lda, *info);
 }
+void dgees_(char *jobvs, char *sort, ARMPL_DGEES_SELECT select, armpl_int_t *n, double *a, armpl_int_t *lda, armpl_int_t *sdim, double *wr, double *wi, double *vs, armpl_int_t *ldvs, double *work, armpl_int_t *lwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "dgees_", 0, 7, 2, armpl_logging_var_dimension);
+	void (*real_dgees_)(char *jobvs, char *sort, ARMPL_DGEES_SELECT select, armpl_int_t *n, double *a, armpl_int_t *lda, armpl_int_t *sdim, double *wr, double *wi, double *vs, armpl_int_t *ldvs, double *work, armpl_int_t *lwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "dgees_");
+	real_dgees_( jobvs, sort, select, n, a, lda, sdim, wr, wi, vs, ldvs, work, lwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *sdim, *ldvs, *lwork, *bwork, *info, *jobvs, *sort);
+}
+void dgeesx_(char *jobvs, char *sort, ARMPL_DGEESX_SELECT select, char *sense, armpl_int_t *n, double *a, armpl_int_t *lda, armpl_int_t *sdim, double *wr, double *wi, double *vs, armpl_int_t *ldvs, double *rconde, double *rcondv, double *work, armpl_int_t *lwork, armpl_int_t *iwork, armpl_int_t *liwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "dgeesx_", 0, 9, 3, armpl_logging_var_dimension);
+	void (*real_dgeesx_)(char *jobvs, char *sort, ARMPL_DGEESX_SELECT select, char *sense, armpl_int_t *n, double *a, armpl_int_t *lda, armpl_int_t *sdim, double *wr, double *wi, double *vs, armpl_int_t *ldvs, double *rconde, double *rcondv, double *work, armpl_int_t *lwork, armpl_int_t *iwork, armpl_int_t *liwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "dgeesx_");
+	real_dgeesx_( jobvs, sort, select, sense, n, a, lda, sdim, wr, wi, vs, ldvs, rconde, rcondv, work, lwork, iwork, liwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *sdim, *ldvs, *lwork, *iwork, *liwork, *bwork, *info, *jobvs, *sort, *sense);
+}
 void dgeev_(char *jobvl, char *jobvr, armpl_int_t *n, double *a, armpl_int_t *lda, double *wr, double *wi, double *vl, armpl_int_t *ldvl, double *vr, armpl_int_t *ldvr, double *work, armpl_int_t *lwork, armpl_int_t *info)
 {
 	armpl_logging_struct logger;
@@ -4447,6 +4501,24 @@ void dggbal_(char *job, armpl_int_t *n, double *a, armpl_int_t *lda, double *b, 
 	void (*real_dggbal_)(char *job, armpl_int_t *n, double *a, armpl_int_t *lda, double *b, armpl_int_t *ldb, armpl_int_t *ilo, armpl_int_t *ihi, double *lscale, double *rscale, double *work, armpl_int_t *info) = dlsym(RTLD_NEXT, "dggbal_");
 	real_dggbal_( job, n, a, lda, b, ldb, ilo, ihi, lscale, rscale, work, info);
 	armpl_logging_leave(&logger, *n, *lda, *ldb, *ilo, *ihi, *info, *job);
+}
+void dgges_(char *jobvsl, char *jobvsr, char *sort, ARMPL_DGGES_DELCTG delctg, armpl_int_t *n, double *a, armpl_int_t *lda, double *b, armpl_int_t *ldb, armpl_int_t *sdim, double *alphar, double *alphai, double *beta, double *vsl, armpl_int_t *ldvsl, double *vsr, armpl_int_t *ldvsr, double *work, armpl_int_t *lwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "dgges_", 0, 9, 3, armpl_logging_var_dimension);
+	void (*real_dgges_)(char *jobvsl, char *jobvsr, char *sort, ARMPL_DGGES_DELCTG delctg, armpl_int_t *n, double *a, armpl_int_t *lda, double *b, armpl_int_t *ldb, armpl_int_t *sdim, double *alphar, double *alphai, double *beta, double *vsl, armpl_int_t *ldvsl, double *vsr, armpl_int_t *ldvsr, double *work, armpl_int_t *lwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "dgges_");
+	real_dgges_( jobvsl, jobvsr, sort, delctg, n, a, lda, b, ldb, sdim, alphar, alphai, beta, vsl, ldvsl, vsr, ldvsr, work, lwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *ldb, *sdim, *ldvsl, *ldvsr, *lwork, *bwork, *info, *jobvsl, *jobvsr, *sort);
+}
+void dggesx_(char *jobvsl, char *jobvsr, char *sort, ARMPL_DGGESX_DELCTG delctg, char *sense, armpl_int_t *n, double *a, armpl_int_t *lda, double *b, armpl_int_t *ldb, armpl_int_t *sdim, double *alphar, double *alphai, double *beta, double *vsl, armpl_int_t *ldvsl, double *vsr, armpl_int_t *ldvsr, double *rconde, double *rcondv, double *work, armpl_int_t *lwork, armpl_int_t *iwork, armpl_int_t *liwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "dggesx_", 0, 11, 4, armpl_logging_var_dimension);
+	void (*real_dggesx_)(char *jobvsl, char *jobvsr, char *sort, ARMPL_DGGESX_DELCTG delctg, char *sense, armpl_int_t *n, double *a, armpl_int_t *lda, double *b, armpl_int_t *ldb, armpl_int_t *sdim, double *alphar, double *alphai, double *beta, double *vsl, armpl_int_t *ldvsl, double *vsr, armpl_int_t *ldvsr, double *rconde, double *rcondv, double *work, armpl_int_t *lwork, armpl_int_t *iwork, armpl_int_t *liwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "dggesx_");
+	real_dggesx_( jobvsl, jobvsr, sort, delctg, sense, n, a, lda, b, ldb, sdim, alphar, alphai, beta, vsl, ldvsl, vsr, ldvsr, rconde, rcondv, work, lwork, iwork, liwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *ldb, *sdim, *ldvsl, *ldvsr, *lwork, *iwork, *liwork, *bwork, *info, *jobvsl, *jobvsr, *sort, *sense);
 }
 void dggev_(char *jobvl, char *jobvr, armpl_int_t *n, double *a, armpl_int_t *lda, double *b, armpl_int_t *ldb, double *alphar, double *alphai, double *beta, double *vl, armpl_int_t *ldvl, double *vr, armpl_int_t *ldvr, double *work, armpl_int_t *lwork, armpl_int_t *info)
 {
@@ -6685,6 +6757,24 @@ void sgeequb_(armpl_int_t *m, armpl_int_t *n, float *a, armpl_int_t *lda, float 
 	real_sgeequb_( m, n, a, lda, r, c, rowcnd, colcnd, amax, info);
 	armpl_logging_leave(&logger, *m, *n, *lda, *info);
 }
+void sgees_(char *jobvs, char *sort, ARMPL_SGEES_SELECT select, armpl_int_t *n, float *a, armpl_int_t *lda, armpl_int_t *sdim, float *wr, float *wi, float *vs, armpl_int_t *ldvs, float *work, armpl_int_t *lwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "sgees_", 0, 7, 2, armpl_logging_var_dimension);
+	void (*real_sgees_)(char *jobvs, char *sort, ARMPL_SGEES_SELECT select, armpl_int_t *n, float *a, armpl_int_t *lda, armpl_int_t *sdim, float *wr, float *wi, float *vs, armpl_int_t *ldvs, float *work, armpl_int_t *lwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "sgees_");
+	real_sgees_( jobvs, sort, select, n, a, lda, sdim, wr, wi, vs, ldvs, work, lwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *sdim, *ldvs, *lwork, *bwork, *info, *jobvs, *sort);
+}
+void sgeesx_(char *jobvs, char *sort, ARMPL_SGEESX_SELECT select, char *sense, armpl_int_t *n, float *a, armpl_int_t *lda, armpl_int_t *sdim, float *wr, float *wi, float *vs, armpl_int_t *ldvs, float *rconde, float *rcondv, float *work, armpl_int_t *lwork, armpl_int_t *iwork, armpl_int_t *liwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "sgeesx_", 0, 9, 3, armpl_logging_var_dimension);
+	void (*real_sgeesx_)(char *jobvs, char *sort, ARMPL_SGEESX_SELECT select, char *sense, armpl_int_t *n, float *a, armpl_int_t *lda, armpl_int_t *sdim, float *wr, float *wi, float *vs, armpl_int_t *ldvs, float *rconde, float *rcondv, float *work, armpl_int_t *lwork, armpl_int_t *iwork, armpl_int_t *liwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "sgeesx_");
+	real_sgeesx_( jobvs, sort, select, sense, n, a, lda, sdim, wr, wi, vs, ldvs, rconde, rcondv, work, lwork, iwork, liwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *sdim, *ldvs, *lwork, *iwork, *liwork, *bwork, *info, *jobvs, *sort, *sense);
+}
 void sgeev_(char *jobvl, char *jobvr, armpl_int_t *n, float *a, armpl_int_t *lda, float *wr, float *wi, float *vl, armpl_int_t *ldvl, float *vr, armpl_int_t *ldvr, float *work, armpl_int_t *lwork, armpl_int_t *info)
 {
 	armpl_logging_struct logger;
@@ -7008,6 +7098,24 @@ void sggbal_(char *job, armpl_int_t *n, float *a, armpl_int_t *lda, float *b, ar
 	void (*real_sggbal_)(char *job, armpl_int_t *n, float *a, armpl_int_t *lda, float *b, armpl_int_t *ldb, armpl_int_t *ilo, armpl_int_t *ihi, float *lscale, float *rscale, float *work, armpl_int_t *info) = dlsym(RTLD_NEXT, "sggbal_");
 	real_sggbal_( job, n, a, lda, b, ldb, ilo, ihi, lscale, rscale, work, info);
 	armpl_logging_leave(&logger, *n, *lda, *ldb, *ilo, *ihi, *info, *job);
+}
+void sgges_(char *jobvsl, char *jobvsr, char *sort, ARMPL_SGGES_SELCTG selctg, armpl_int_t *n, float *a, armpl_int_t *lda, float *b, armpl_int_t *ldb, armpl_int_t *sdim, float *alphar, float *alphai, float *beta, float *vsl, armpl_int_t *ldvsl, float *vsr, armpl_int_t *ldvsr, float *work, armpl_int_t *lwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "sgges_", 0, 9, 3, armpl_logging_var_dimension);
+	void (*real_sgges_)(char *jobvsl, char *jobvsr, char *sort, ARMPL_SGGES_SELCTG selctg, armpl_int_t *n, float *a, armpl_int_t *lda, float *b, armpl_int_t *ldb, armpl_int_t *sdim, float *alphar, float *alphai, float *beta, float *vsl, armpl_int_t *ldvsl, float *vsr, armpl_int_t *ldvsr, float *work, armpl_int_t *lwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "sgges_");
+	real_sgges_( jobvsl, jobvsr, sort, selctg, n, a, lda, b, ldb, sdim, alphar, alphai, beta, vsl, ldvsl, vsr, ldvsr, work, lwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *ldb, *sdim, *ldvsl, *ldvsr, *lwork, *bwork, *info, *jobvsl, *jobvsr, *sort);
+}
+void sggesx_(char *jobvsl, char *jobvsr, char *sort, ARMPL_SGGESX_SELCTG selctg, char *sense, armpl_int_t *n, float *a, armpl_int_t *lda, float *b, armpl_int_t *ldb, armpl_int_t *sdim, float *alphar, float *alphai, float *beta, float *vsl, armpl_int_t *ldvsl, float *vsr, armpl_int_t *ldvsr, float *rconde, float *rcondv, float *work, armpl_int_t *lwork, armpl_int_t *iwork, armpl_int_t *liwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "sggesx_", 0, 11, 4, armpl_logging_var_dimension);
+	void (*real_sggesx_)(char *jobvsl, char *jobvsr, char *sort, ARMPL_SGGESX_SELCTG selctg, char *sense, armpl_int_t *n, float *a, armpl_int_t *lda, float *b, armpl_int_t *ldb, armpl_int_t *sdim, float *alphar, float *alphai, float *beta, float *vsl, armpl_int_t *ldvsl, float *vsr, armpl_int_t *ldvsr, float *rconde, float *rcondv, float *work, armpl_int_t *lwork, armpl_int_t *iwork, armpl_int_t *liwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "sggesx_");
+	real_sggesx_( jobvsl, jobvsr, sort, selctg, sense, n, a, lda, b, ldb, sdim, alphar, alphai, beta, vsl, ldvsl, vsr, ldvsr, rconde, rcondv, work, lwork, iwork, liwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *ldb, *sdim, *ldvsl, *ldvsr, *lwork, *iwork, *liwork, *bwork, *info, *jobvsl, *jobvsr, *sort, *sense);
 }
 void sggev_(char *jobvl, char *jobvr, armpl_int_t *n, float *a, armpl_int_t *lda, float *b, armpl_int_t *ldb, float *alphar, float *alphai, float *beta, float *vl, armpl_int_t *ldvl, float *vr, armpl_int_t *ldvr, float *work, armpl_int_t *lwork, armpl_int_t *info)
 {
@@ -9056,6 +9164,24 @@ void zgeequb_(armpl_int_t *m, armpl_int_t *n, armpl_doublecomplex_t *a, armpl_in
 	real_zgeequb_( m, n, a, lda, r, c, rowcnd, colcnd, amax, info);
 	armpl_logging_leave(&logger, *m, *n, *lda, *info);
 }
+void zgees_(char *jobvs, char *sort, ARMPL_ZGEES_SELECT select, armpl_int_t *n, armpl_doublecomplex_t *a, armpl_int_t *lda, armpl_int_t *sdim, armpl_doublecomplex_t *w, armpl_doublecomplex_t *vs, armpl_int_t *ldvs, armpl_doublecomplex_t *work, armpl_int_t *lwork, double *rwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "zgees_", 0, 7, 2, armpl_logging_var_dimension);
+	void (*real_zgees_)(char *jobvs, char *sort, ARMPL_ZGEES_SELECT select, armpl_int_t *n, armpl_doublecomplex_t *a, armpl_int_t *lda, armpl_int_t *sdim, armpl_doublecomplex_t *w, armpl_doublecomplex_t *vs, armpl_int_t *ldvs, armpl_doublecomplex_t *work, armpl_int_t *lwork, double *rwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "zgees_");
+	real_zgees_( jobvs, sort, select, n, a, lda, sdim, w, vs, ldvs, work, lwork, rwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *sdim, *ldvs, *lwork, *bwork, *info, *jobvs, *sort);
+}
+void zgeesx_(char *jobvs, char *sort, ARMPL_ZGEESX_SELECT select, char *sense, armpl_int_t *n, armpl_doublecomplex_t *a, armpl_int_t *lda, armpl_int_t *sdim, armpl_doublecomplex_t *w, armpl_doublecomplex_t *vs, armpl_int_t *ldvs, double *rconde, double *rcondv, armpl_doublecomplex_t *work, armpl_int_t *lwork, double *rwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "zgeesx_", 0, 7, 3, armpl_logging_var_dimension);
+	void (*real_zgeesx_)(char *jobvs, char *sort, ARMPL_ZGEESX_SELECT select, char *sense, armpl_int_t *n, armpl_doublecomplex_t *a, armpl_int_t *lda, armpl_int_t *sdim, armpl_doublecomplex_t *w, armpl_doublecomplex_t *vs, armpl_int_t *ldvs, double *rconde, double *rcondv, armpl_doublecomplex_t *work, armpl_int_t *lwork, double *rwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "zgeesx_");
+	real_zgeesx_( jobvs, sort, select, sense, n, a, lda, sdim, w, vs, ldvs, rconde, rcondv, work, lwork, rwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *sdim, *ldvs, *lwork, *bwork, *info, *jobvs, *sort, *sense);
+}
 void zgeev_(char *jobvl, char *jobvr, armpl_int_t *n, armpl_doublecomplex_t *a, armpl_int_t *lda, armpl_doublecomplex_t *w, armpl_doublecomplex_t *vl, armpl_int_t *ldvl, armpl_doublecomplex_t *vr, armpl_int_t *ldvr, armpl_doublecomplex_t *work, armpl_int_t *lwork, double *rwork, armpl_int_t *info)
 {
 	armpl_logging_struct logger;
@@ -9361,6 +9487,24 @@ void zggbal_(char *job, armpl_int_t *n, armpl_doublecomplex_t *a, armpl_int_t *l
 	void (*real_zggbal_)(char *job, armpl_int_t *n, armpl_doublecomplex_t *a, armpl_int_t *lda, armpl_doublecomplex_t *b, armpl_int_t *ldb, armpl_int_t *ilo, armpl_int_t *ihi, double *lscale, double *rscale, double *work, armpl_int_t *info) = dlsym(RTLD_NEXT, "zggbal_");
 	real_zggbal_( job, n, a, lda, b, ldb, ilo, ihi, lscale, rscale, work, info);
 	armpl_logging_leave(&logger, *n, *lda, *ldb, *ilo, *ihi, *info, *job);
+}
+void zgges_(char *jobvsl, char *jobvsr, char *sort, ARMPL_ZGGES_DELCTG delctg, armpl_int_t *n, armpl_doublecomplex_t *a, armpl_int_t *lda, armpl_doublecomplex_t *b, armpl_int_t *ldb, armpl_int_t *sdim, armpl_doublecomplex_t *alpha, armpl_doublecomplex_t *beta, armpl_doublecomplex_t *vsl, armpl_int_t *ldvsl, armpl_doublecomplex_t *vsr, armpl_int_t *ldvsr, armpl_doublecomplex_t *work, armpl_int_t *lwork, double *rwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "zgges_", 0, 9, 3, armpl_logging_var_dimension);
+	void (*real_zgges_)(char *jobvsl, char *jobvsr, char *sort, ARMPL_ZGGES_DELCTG delctg, armpl_int_t *n, armpl_doublecomplex_t *a, armpl_int_t *lda, armpl_doublecomplex_t *b, armpl_int_t *ldb, armpl_int_t *sdim, armpl_doublecomplex_t *alpha, armpl_doublecomplex_t *beta, armpl_doublecomplex_t *vsl, armpl_int_t *ldvsl, armpl_doublecomplex_t *vsr, armpl_int_t *ldvsr, armpl_doublecomplex_t *work, armpl_int_t *lwork, double *rwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "zgges_");
+	real_zgges_( jobvsl, jobvsr, sort, delctg, n, a, lda, b, ldb, sdim, alpha, beta, vsl, ldvsl, vsr, ldvsr, work, lwork, rwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *ldb, *sdim, *ldvsl, *ldvsr, *lwork, *bwork, *info, *jobvsl, *jobvsr, *sort);
+}
+void zggesx_(char *jobvsl, char *jobvsr, char *sort, ARMPL_ZGGESX_DELCTG delctg, char *sense, armpl_int_t *n, armpl_doublecomplex_t *a, armpl_int_t *lda, armpl_doublecomplex_t *b, armpl_int_t *ldb, armpl_int_t *sdim, armpl_doublecomplex_t *alpha, armpl_doublecomplex_t *beta, armpl_doublecomplex_t *vsl, armpl_int_t *ldvsl, armpl_doublecomplex_t *vsr, armpl_int_t *ldvsr, double *rconde, double *rcondv, armpl_doublecomplex_t *work, armpl_int_t *lwork, double *rwork, armpl_int_t *iwork, armpl_int_t *liwork, armpl_int_t *bwork, armpl_int_t *info)
+{
+	armpl_logging_struct logger;
+	int armpl_logging_var_dimension=0;
+	armpl_logging_enter(&logger, "zggesx_", 0, 11, 4, armpl_logging_var_dimension);
+	void (*real_zggesx_)(char *jobvsl, char *jobvsr, char *sort, ARMPL_ZGGESX_DELCTG delctg, char *sense, armpl_int_t *n, armpl_doublecomplex_t *a, armpl_int_t *lda, armpl_doublecomplex_t *b, armpl_int_t *ldb, armpl_int_t *sdim, armpl_doublecomplex_t *alpha, armpl_doublecomplex_t *beta, armpl_doublecomplex_t *vsl, armpl_int_t *ldvsl, armpl_doublecomplex_t *vsr, armpl_int_t *ldvsr, double *rconde, double *rcondv, armpl_doublecomplex_t *work, armpl_int_t *lwork, double *rwork, armpl_int_t *iwork, armpl_int_t *liwork, armpl_int_t *bwork, armpl_int_t *info) = dlsym(RTLD_NEXT, "zggesx_");
+	real_zggesx_( jobvsl, jobvsr, sort, delctg, sense, n, a, lda, b, ldb, sdim, alpha, beta, vsl, ldvsl, vsr, ldvsr, rconde, rcondv, work, lwork, rwork, iwork, liwork, bwork, info);
+	armpl_logging_leave(&logger, *n, *lda, *ldb, *sdim, *ldvsl, *ldvsr, *lwork, *iwork, *liwork, *bwork, *info, *jobvsl, *jobvsr, *sort, *sense);
 }
 void zggev_(char *jobvl, char *jobvr, armpl_int_t *n, armpl_doublecomplex_t *a, armpl_int_t *lda, armpl_doublecomplex_t *b, armpl_int_t *ldb, armpl_doublecomplex_t *alpha, armpl_doublecomplex_t *beta, armpl_doublecomplex_t *vl, armpl_int_t *ldvl, armpl_doublecomplex_t *vr, armpl_int_t *ldvr, armpl_doublecomplex_t *work, armpl_int_t *lwork, double *rwork, armpl_int_t *info)
 {

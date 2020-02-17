@@ -94,8 +94,8 @@ def main(args=None):
            VargsToLog.append("%s" % splitline[entry+1])
            PRELIMS2 = "%s \tarmpl_logging_var_dimension=%s;\n" % (PRELIMS, splitline[entry+1])
            PRELIMS=PRELIMS2
-
-        DEREFEDARGS = "%s %s" % ( DEREFEDARGS, str(splitline[entry+1]))
+        
+	DEREFEDARGS = "%s %s" % ( DEREFEDARGS, str(splitline[entry+1]))
         if (entry < len(splitline)-2) :
            DEREFEDARGS = "%s," % DEREFEDARGS
 

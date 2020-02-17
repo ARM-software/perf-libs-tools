@@ -63,6 +63,11 @@ typedef struct
 } armpl_doublecomplex_t;
 #endif /* !defined(_ARMPL_ARMPL_SINGLECOMPLEX_T) */
 
+
+
+
+
+
 /* ------------------------------------------------------------------ */
 #include "armpl.h"
 

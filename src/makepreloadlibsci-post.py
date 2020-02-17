@@ -35,7 +35,7 @@ import itertools	# Iteration toolbox
 def main(args=None):
 
   # Load appropriately made file
-  fname = "PROTOTYPES_LIBSCI"
+  fname = "PROTOTYPES_LIBSCI_BLAS"
   inputfile = open(fname, 'r')
 
   # Create output file (Step 2)

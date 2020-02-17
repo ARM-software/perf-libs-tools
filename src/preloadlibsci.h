@@ -63,7 +63,32 @@ typedef struct
 } armpl_doublecomplex_t;
 #endif /* !defined(_ARMPL_ARMPL_SINGLECOMPLEX_T) */
 
+
+
+
+
+
 /* ------------------------------------------------------------------ */
 //#include "armpl.h"
 
+ typedef armpl_int_t (* ARMPL_CGEES_SELECT)(const armpl_singlecomplex_t *);
+ typedef armpl_int_t (* ARMPL_CGEESX_SELECT)(const armpl_singlecomplex_t *);
+ typedef armpl_int_t (* ARMPL_CGGES_SELCTG)(const armpl_singlecomplex_t *, const armpl_singlecomplex_t *);
+ typedef armpl_int_t (* ARMPL_CGGESX_SELCTG)(const armpl_singlecomplex_t *, const armpl_singlecomplex_t *);
+ typedef armpl_int_t (* ARMPL_CGGES3_SELCTG)(const armpl_singlecomplex_t *, const armpl_singlecomplex_t *);
+ typedef armpl_int_t (* ARMPL_DGEES_SELECT)(const double *, const double *);
+ typedef armpl_int_t (* ARMPL_DGEESX_SELECT)(const double *, const double *);
+ typedef armpl_int_t (* ARMPL_DGGES_DELCTG)(const double *, const double *, const double *);
+ typedef armpl_int_t (* ARMPL_DGGESX_DELCTG)(const double *, const double *, const double *);
+ typedef armpl_int_t (* ARMPL_DGGES3_SELCTG)(const double *, const double *, const double *);
+ typedef armpl_int_t (* ARMPL_SGEES_SELECT)(const float *, const float *);
+ typedef armpl_int_t (* ARMPL_SGEESX_SELECT)(const float *, const float *);
+ typedef armpl_int_t (* ARMPL_SGGES_SELCTG)(const float *, const float *, const float *);
+ typedef armpl_int_t (* ARMPL_SGGESX_SELCTG)(const float *, const float *, const float *);
+ typedef armpl_int_t (* ARMPL_SGGES3_SELCTG)(const float *, const float *, const float *);
+ typedef armpl_int_t (* ARMPL_ZGEES_SELECT)(const armpl_doublecomplex_t *);
+ typedef armpl_int_t (* ARMPL_ZGEESX_SELECT)(const armpl_doublecomplex_t *);
+ typedef armpl_int_t (* ARMPL_ZGGES_DELCTG)(const armpl_doublecomplex_t *, const armpl_doublecomplex_t *);
+ typedef armpl_int_t (* ARMPL_ZGGESX_DELCTG)(const armpl_doublecomplex_t *, const armpl_doublecomplex_t *);
+ typedef armpl_int_t (* ARMPL_ZGGES3_SELCTG)(const armpl_doublecomplex_t *, const armpl_doublecomplex_t *);
 #endif
