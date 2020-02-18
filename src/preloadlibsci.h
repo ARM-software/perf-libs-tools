@@ -70,6 +70,8 @@ typedef struct
 
 /* ------------------------------------------------------------------ */
 //#include "armpl.h"
+//#include "mkl.h"
+//#include "mkl_types.h"
 
  typedef armpl_int_t (* ARMPL_CGEES_SELECT)(const armpl_singlecomplex_t *);
  typedef armpl_int_t (* ARMPL_CGEESX_SELECT)(const armpl_singlecomplex_t *);
