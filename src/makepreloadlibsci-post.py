@@ -100,7 +100,7 @@ def main(args=None):
            DEREFEDARGS = "%s," % DEREFEDARGS
 
         if (splitline[entry] == "armpl_int_t" or splitline[entry] == "MKL_INT") :
-           IargsToLog.append("%s" % splitline[entry+1])
+           IargsToLog.append("*%s" % splitline[entry+1])
 
         if (splitline[entry] == "armpl_int_v") :
            VargsToLog.append("%s" % splitline[entry+1])
