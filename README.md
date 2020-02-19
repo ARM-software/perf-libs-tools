@@ -3,17 +3,12 @@
 
 **This tool is adapted from the ARM [perf-libs-tools](https://github.com/ARM-software/perf-libs-tools) tracing tool.** It has been adapted to work with Cray's `scilib` and Intel's `MKL`. It also features a few more python tools for analysing the generated log files.
 
----------
-
 ## Licensing
----------
 
 This project is distributed under an Apache 2.0 license, available in the file
 LICENSE.  All inbound contributions will also be under this same licence.
 
-
 ## Compiling 
----------
 ### Build ARMPL Tracer
 
 1. Ensure that you are using the latest version of the logging library to match 
@@ -41,7 +36,6 @@ You should now have a "lib/generic-summarylog.so" created.
 **Note:** The tracer has not currently been tested with other FFT libraries
 
 ## Usage
------
 
 1. Use LD_PRELOAD to pick-up the newly created logging library:
   ```shell
@@ -58,7 +52,6 @@ You should now have a "lib/generic-summarylog.so" created.
   the environment variable ARMPL_SUMMARY_FILEROOT before running the application.
    
 ## Output
-------
 
 The output files generated list the following information:
 
@@ -71,7 +64,6 @@ been called with, and then calculating the mean time taken for those inputs.
 Only the integer and character parameters are recorded in this output.
 
 ## Tools
------
 
 In the `tools/` directory are some example scripts to produce graphical summaries 
 of the output produced from the logging library.  They are written using the 
@@ -180,6 +172,7 @@ python blas_usage.py -x -i /tmp/armpl.blas -o blas_usage
 #### Output
 
 <img src="tools/EXAMPLES/example_blas_usage.png" width="25%">
+
 [Example Graph](tools/EXAMPLES/example_blas_usage.png )
 
 
@@ -240,6 +233,7 @@ python dgemm_scatter.py -i "/tmp/armpl_scatter.zgemm"  -o "example_zgemm_scatter
 #### Output
 
 <img src="tools/EXAMPLES/example_zgemm_scatter.png" width="70%">
+
 [Example Graph](tools/EXAMPLES/example_zgemm_scatter.png )
 
 
@@ -271,7 +265,8 @@ python heat_dgemm.py -i "/tmp/armpl.zgemm"  -o "example_dgemm_heat" -t "CP2K DGE
 #### Output
 
 <img src="tools/EXAMPLES/example_dgemm_heat.png" width="70%">
-![Example Graph](tools/EXAMPLES/example_dgemm_heat.png )
+
+[Example Graph](tools/EXAMPLES/example_dgemm_heat.png )
 
 
 Known issues
