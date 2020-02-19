@@ -8,13 +8,13 @@
 1. [Compiling](#compiling)
 2. [Usage](#usage)
 3. [Tools](#tools)
-  1. [Overall Library Usage](#Overall-Library-Usage)
-  2. [Generate BLAS Usage Plot](#Generate-BLAS-Usage-Plot)
-  3. [Create ?GEMM Summaries](#Create-?GEMM-Summaries)
-    1. [Create ?GEMM Scatter Graph](#Create-?GEMM-Scatter-Graph)
-    2. [Create ?GEMM Heat Map](#Create-?GEMM-Heat-Map)
+ 1. [Overall Library Usage](#Overall-Library-Usage)
+ 2. [Generate BLAS Usage Plot](#Generate-BLAS-Usage-Plot)
+ 3. [Create ?GEMM Summaries](#Create-?GEMM-Summaries)
+  1. [Create ?GEMM Scatter Graph](#Create-?GEMM-Scatter-Graph)
+  2. [Create ?GEMM Heat Map](#Create-?GEMM-Heat-Map)
 4. [Known Issues](#Known-Issues)
-4. [Licensing](#Licensing)
+5. [Licensing](#Licensing)
     
 
 
