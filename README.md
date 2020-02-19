@@ -239,7 +239,7 @@ python dgemm_scatter.py -i "/tmp/armpl_scatter.zgemm"  -o "example_zgemm_scatter
 
 #### Output
 
-<img src="tools/EXAMPLES/example_zgemm_scatter.png" width="60%">
+<img src="tools/EXAMPLES/example_zgemm_scatter.png" width="70%">
 [Example Graph](tools/EXAMPLES/example_zgemm_scatter.png )
 
 
@@ -270,7 +270,7 @@ python heat_dgemm.py -i "/tmp/armpl.zgemm"  -o "example_dgemm_heat" -t "CP2K DGE
 
 #### Output
 
-<img src="tools/EXAMPLES/example_dgemm_heat.png" width="60%">
+<img src="tools/EXAMPLES/example_dgemm_heat.png" width="70%">
 ![Example Graph](tools/EXAMPLES/example_dgemm_heat.png )
 
 
