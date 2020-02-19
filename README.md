@@ -239,7 +239,7 @@ python dgemm_scatter.py -i "/tmp/armpl_scatter.zgemm"  -o "example_zgemm_scatter
 #### Output
 
 
-[Example Graph](tools/EXAMPLES/example_zgemm_scatter.pdf )
+![Example Graph](tools/EXAMPLES/example_zgemm_scatter.pdf )
 
 
 ### Create ?GEMM Heat Maps
