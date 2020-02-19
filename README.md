@@ -3,10 +3,20 @@
 
 **This tool is adapted from the ARM [perf-libs-tools](https://github.com/ARM-software/perf-libs-tools) tracing tool.** It has been adapted to work with Cray's `scilib` and Intel's `MKL`. It also features a few more python tools for analysing the generated log files.
 
-## Licensing
+## Contents
 
-This project is distributed under an Apache 2.0 license, available in the file
-LICENSE.  All inbound contributions will also be under this same licence.
+1. [Compiling](#compiling)
+2. [Usage](#usage)
+3. [Tools](#tools)
+  1. [Overall Library Usage](#Overall-Library-Usage)
+  2. [Generate BLAS Usage Plot](#Generate-BLAS-Usage-Plot)
+  3. [Create ?GEMM Summaries](#Create-?GEMM-Summaries)
+    1. [Create ?GEMM Scatter Graph](#Create-?GEMM-Scatter-Graph)
+    2. [Create ?GEMM Heat Map](#Create-?GEMM-Heat-Map)
+4. [Known Issues](#Known-Issues)
+4. [Licensing](#Licensing)
+    
+
 
 ## Compiling 
 ### Build ARMPL Tracer
@@ -176,7 +186,7 @@ python blas_usage.py -x -i /tmp/armpl.blas -o blas_usage
 [Example Graph](tools/EXAMPLES/example_blas_usage.png )
 
 
-### Create ?GEMM Summaries for Scatter and Heatmap Graphs
+### Create ?GEMM Summaries
 
 #### Command
 
@@ -237,7 +247,7 @@ python dgemm_scatter.py -i "/tmp/armpl_scatter.zgemm"  -o "example_zgemm_scatter
 [Example Graph](tools/EXAMPLES/example_zgemm_scatter.png )
 
 
-### Create ?GEMM Heat Maps
+### Create ?GEMM Heat Map
 
 #### Command
 
@@ -269,11 +279,15 @@ python heat_dgemm.py -i "/tmp/armpl.zgemm"  -o "example_dgemm_heat" -t "CP2K DGE
 [Example Graph](tools/EXAMPLES/example_dgemm_heat.png )
 
 
-Known issues
-------------
+## Known issues
 
-* For certain codes that create extortionate numbers of FFTW plans then it may 
+- For certain codes that create extortionate numbers of FFTW plans then it may 
   be necessary to prevent trying to match plans with executes.  This situation 
   would result in a significant, and worsening, run-time performance of the 
   application.  This is not detailed here, but instructions can be made 
   available upon request.
+
+## Licensing
+
+This project is distributed under an Apache 2.0 license, available in the file
+LICENSE.  All inbound contributions will also be under this same licence.
