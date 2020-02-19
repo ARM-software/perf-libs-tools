@@ -10,9 +10,9 @@
 3. [Tools](#tools)
     - [Overall Library Usage](#Overall-Library-Usage)
     - [Generate BLAS Usage Plot](#Generate-BLAS-Usage-Plot)
-    - [Create ?GEMM Summaries](#Create-?GEMM-Summaries)
-      - [Create ?GEMM Scatter Graph](#Create-?GEMM-Scatter-Graph)
-      - [Create ?GEMM Heat Map](#Create-?GEMM-Heat-Map)
+    - [Create GEMM Summaries](#Create-GEMM-Summaries)
+      - [Create GEMM Scatter Graph](#Create-GEMM-Scatter-Graph)
+      - [Create GEMM Heat Map](#Create-?GEMM-Heat-Map)
 4. [Known Issues](#Known-Issues)
 5. [Licensing](#Licensing)
     
@@ -186,7 +186,7 @@ python blas_usage.py -x -i /tmp/armpl.blas -o blas_usage
 [Example Graph](tools/EXAMPLES/example_blas_usage.png )
 
 
-### Create ?GEMM Summaries
+### Create GEMM Summaries
 
 #### Command
 
@@ -214,7 +214,7 @@ Two files:
  - `/tmp/armpl_scatter.<?gemm>`
  - `/tmp/armpl.<?gemm>`
 
-### Create ?GEMM Scatter Graph
+### Create GEMM Scatter Graph
 
 
 #### Command
@@ -247,7 +247,7 @@ python dgemm_scatter.py -i "/tmp/armpl_scatter.zgemm"  -o "example_zgemm_scatter
 [Example Graph](tools/EXAMPLES/example_zgemm_scatter.png )
 
 
-### Create ?GEMM Heat Map
+### Create GEMM Heat Map
 
 #### Command
 
