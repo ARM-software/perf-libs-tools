@@ -179,7 +179,8 @@ python blas_usage.py -x -i /tmp/armpl.blas -o blas_usage
 
 #### Output
 
-![Example Graph](tools/EXAMPLES/example_blas_usage.png )
+<img src="tools/EXAMPLES/example_blas_usage.png" width="25%">
+[Example Graph](tools/EXAMPLES/example_blas_usage.png )
 
 
 ### Create ?GEMM Summaries for Scatter and Heatmap Graphs
@@ -238,8 +239,8 @@ python dgemm_scatter.py -i "/tmp/armpl_scatter.zgemm"  -o "example_zgemm_scatter
 
 #### Output
 
-
-![Example Graph](tools/EXAMPLES/example_zgemm_scatter.png )
+<img src="tools/EXAMPLES/example_zgemm_scatter.png" width="25%">
+[Example Graph](tools/EXAMPLES/example_zgemm_scatter.png )
 
 
 ### Create ?GEMM Heat Maps
@@ -264,12 +265,13 @@ This visualizes the data from an armpl.?gemm file.
 #### Example
 
 ```shell
-python heat_dgemm.py -i "/tmp/armpl.zgemm"  -o "example_dgemm_scatter" -t "CP2K DGEMM Calls (1 Node)"
+python heat_dgemm.py -i "/tmp/armpl.zgemm"  -o "example_dgemm_heat" -t "CP2K DGEMM Calls (1 Node)"
 ```
 
 #### Output
 
-![Example Graph](tools/EXAMPLES/example_blas_usage.png )
+<img src="tools/EXAMPLES/example_dgemm_heat.png" width="25%">
+![Example Graph](tools/EXAMPLES/example_dgemm_heat.png )
 
 
 Known issues
