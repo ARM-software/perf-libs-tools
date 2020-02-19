@@ -143,7 +143,12 @@ int main(int argc, char** argv)
 	fdata = calloc((ncols*ncols)*NDATA, sizeof(&nCalls));
 
 
-	FILE* dgemm_log = fopen("/tmp/dgemm_record.log", "w");
+	FILE* scatter_log;
+	/* Open file for output */
+	char *outScFname = calloc(strlen("/tmp/armpl_scatter.")+strlen(funcNames[funcNameID])+1,sizeof(char));
+	strcat(outScFname,"/tmp/armpl_scatter.");
+	strcat(outScFname,funcNames[funcNameID]);
+	scatter_log = fopen(outScFname, "w");
   
 	/* Run search command 2nd time and get access to return results to get data */
 	for (i = fnameArg; i < argc; i++) {
@@ -166,7 +171,7 @@ int main(int argc, char** argv)
 			data[(ncols*ra+ca)*NDATA+0]+=nCalls;
 			data[(ncols*rb+cb)*NDATA+1]+=nCalls;
 			
-			fprintf(dgemm_log, "%d %d %d %lld %f\n", M, N, K, nCalls, cputime);
+			fprintf(scatter_log, "%d %d %d %lld %f\n", M, N, K, nCalls, cputime);
 
 			fdata[(ncols*ra+ca)*NDATA+0]+=cputime*nCalls;
 			fdata[(ncols*rb+cb)*NDATA+1]+=cputime*nCalls;
