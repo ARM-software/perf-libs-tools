@@ -31,11 +31,16 @@
 
 import re		# Regular expressions toolbox
 import itertools	# Iteration toolbox
+import argparse
 
-def main(args=None):
+def main():
+   
+  parser = argparse.ArgumentParser()
+  parser.add_argument("-i", "--input", help="Input file", dest='prototypes', default='')
+  args = parser.parse_args()
 
   # Load appropriately made file
-  fname = "PROTOTYPES"
+  fname = args.prototypes
   inputfile = open(fname, 'r')
 
   # Create output file (Step 2)

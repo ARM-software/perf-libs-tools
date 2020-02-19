@@ -64,11 +64,27 @@ typedef struct
 #endif /* !defined(_ARMPL_ARMPL_SINGLECOMPLEX_T) */
 
 
+typedef armpl_int_t (* ARMPL_CGEES_SELECT)(armpl_singlecomplex_t *);
+typedef armpl_int_t (* ARMPL_CGEESX_SELECT)(armpl_singlecomplex_t *);
+typedef armpl_int_t (* ARMPL_CGGES_SELCTG)(armpl_singlecomplex_t *, armpl_singlecomplex_t *);
+typedef armpl_int_t (* ARMPL_CGGESX_SELCTG)(armpl_singlecomplex_t *, armpl_singlecomplex_t *);
+typedef armpl_int_t (* ARMPL_DGEES_SELECT)(double *, double *);
+typedef armpl_int_t (* ARMPL_DGEESX_SELECT)(double *, double *);
+typedef armpl_int_t (* ARMPL_DGGES_DELCTG)(double *, double *, double *);
+typedef armpl_int_t (* ARMPL_DGGESX_DELCTG)(double *, double *, double *);
+typedef armpl_int_t (* ARMPL_SGEES_SELECT)(float *, float *);
+typedef armpl_int_t (* ARMPL_SGEESX_SELECT)(float *, float *);
+typedef armpl_int_t (* ARMPL_SGGES_SELCTG)(float *, float *, float *);
+typedef armpl_int_t (* ARMPL_SGGESX_SELCTG)(float *, float *, float *);
+typedef armpl_int_t (* ARMPL_ZGEES_SELECT)(armpl_doublecomplex_t *);
+typedef armpl_int_t (* ARMPL_ZGEESX_SELECT)(armpl_doublecomplex_t *);
+typedef armpl_int_t (* ARMPL_ZGGES_DELCTG)(armpl_doublecomplex_t *, armpl_doublecomplex_t *);
+typedef armpl_int_t (* ARMPL_ZGGESX_DELCTG)(armpl_doublecomplex_t *, armpl_doublecomplex_t *);
 
 
 
 
 /* ------------------------------------------------------------------ */
-#include "armpl.h"
+// #include "armpl.h"
 
 #endif

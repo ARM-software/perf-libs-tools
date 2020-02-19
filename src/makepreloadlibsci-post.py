@@ -46,7 +46,6 @@ def main(args=None):
   # Loop over input lines (Step 3 - inc step3a)
   for line in  inputfile:
 
-     print(line)
      IargsToLog = []
      VargsToLog = []
      CargsToLog = []

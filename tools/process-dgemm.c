@@ -203,7 +203,7 @@ int main(int argc, char** argv)
 		pclose(fp);
 	}
 
-	fclose(dgemm_log);
+	fclose(scatter_log);
 
 	/* Open file for output */
 	char *outFname = calloc(strlen("/tmp/armpl.")+strlen(funcNames[funcNameID])+1,sizeof(char));
