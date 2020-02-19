@@ -222,7 +222,7 @@ dgemm_scatter.py [-h] [-t] -o GRAPH_NAME -i INFILE [-l]
 
 #### What it does?
 
-This visualizes the data from an armpl_scatter.?gemm file.
+This visualizes the data from an `armpl_scatter.?gemm` file.
 
 #### Example
 
@@ -254,7 +254,7 @@ heat_dgemm.py [-h] [-t] -o GRAPH_NAME -i INFILE [-l]
 
 #### What it does?
 
-This visualizes the data from an armpl.?gemm file.
+This visualizes the data from an `armpl.?gemm file`.
 
 #### Example
 
