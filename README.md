@@ -1,5 +1,6 @@
 # perf-libs-tools
 
+**Copyright 2017-9 Arm Limited, All rights reserved**
 
 **This tool is adapted from the ARM [perf-libs-tools](https://github.com/ARM-software/perf-libs-tools) tracing tool.** It has been adapted to work with Cray's `scilib` and Intel's `MKL`. It also features a few more python tools for analysing the generated log files.
 
