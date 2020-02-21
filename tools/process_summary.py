@@ -287,7 +287,7 @@ def processFFTexecutes(fftNames, fftLens, fftCnts, fftHowmany, fftTimes, fftPlan
 
 def processMultidimFFTs(fftNames, fftLens, fftCnts, fftTimes, fftHowmany) :
 
-# First find maximum length
+   # First find maximum length
   maxlen=0
   for i in range(0,len(fftNames)) :
      routine = fftNames[i]
@@ -299,10 +299,10 @@ def processMultidimFFTs(fftNames, fftLens, fftCnts, fftTimes, fftHowmany) :
            if (testlen>maxlen) :
               maxlen=testlen
 
-# Now iniialize array of zeroes up to maxlen
+   # Now iniialize array of zeroes up to maxlen
   fftTotCnt = [0] * (maxlen+2)
   
-# Now loop over FFTW routines called accumulating multidimensional counts  
+   # Now loop over FFTW routines called accumulating multidimensional counts  
   for routineNum in range(0,len(fftNames)) :
      routine = fftNames[routineNum]
      if ( not routine.startswith("fftw") and not routine.startswith("sfftw") and not  routine.startswith("dfftw")) :
@@ -342,30 +342,30 @@ def processMultidimFFTs(fftNames, fftLens, fftCnts, fftTimes, fftHowmany) :
 #################################################
 
 def calcFftContribs(nDim, fftTotCnt, fftCnt, fftLens, fftHowmany) :
-# Note fftCnt is now a multiplicative factor for all additiions below
-#      fftLens is a list of our array of dimensions
-#
-## How do we handle 3-d FFTs, for instance
-# If the line reads "fftw_plan_dft_3d len= [n1, n2, n3]" then this contains:
-#           n2 transforms of length n1
-#         + n1 transforms of length n2
-#    + (n1*n2) transforms of length n3
-#[+ (n1*n2*n3) transforms of length n4...]
-#
-# Want to produce a list of the total number of invocations of each length
-# 
-#  dimProduct=1
-#  if (N==1)
-#  	fftTotCnt[n[0]] ++;
-#  else {
-#    fftTotCnt[n[0]] += n[1];
-#    dimProduct=n[0];
-#    for (i=1; i< N; i++)
-#    {
-#	fftTotCnt[n[i]] += dimProduct;	}
-#	dimProduct *= n[i]
-#    }						}
-#  }						}
+   # Note fftCnt is now a multiplicative factor for all additiions below
+   #      fftLens is a list of our array of dimensions
+   #
+   ## How do we handle 3-d FFTs, for instance
+   # If the line reads "fftw_plan_dft_3d len= [n1, n2, n3]" then this contains:
+   #           n2 transforms of length n1
+   #         + n1 transforms of length n2
+   #    + (n1*n2) transforms of length n3
+   #[+ (n1*n2*n3) transforms of length n4...]
+   #
+   # Want to produce a list of the total number of invocations of each length
+   # 
+   #  dimProduct=1
+   #  if (N==1)
+   #  	fftTotCnt[n[0]] ++;
+   #  else {
+   #    fftTotCnt[n[0]] += n[1];
+   #    dimProduct=n[0];
+   #    for (i=1; i< N; i++)
+   #    {
+   #	fftTotCnt[n[i]] += dimProduct;	}
+   #	dimProduct *= n[i]
+   #    }						}
+   #  }						}
 
   dimProduct=1
   
@@ -408,6 +408,38 @@ def logBLAS(readline, blasNames, blasCnts, blasTimes, blasCnts_top, blasTimes_to
     blasCnts_top.append(cnt_top)     
     blasTimes_top.append(cnt_top*avgtime_top)
     
+
+#################################################
+# Collect all the data about Math calls made
+#################################################
+
+def logMath(readline, mathNames, mathCnts, mathTimes, mathCnts_top, mathTimes_top):
+
+  # set up the bits from the read line
+  routine = readline[1]
+  cnt = int(readline[3])
+  avgtime = float(readline[5])
+  cnt_top = int(readline[7])
+  avgtime_top = float(readline[9])
+  
+  found = 0
+  for fnNum in range(0,len(mathNames)) : 
+    if (routine==mathNames[fnNum]) :
+      found = 1
+      mathCnts[fnNum] += cnt
+      mathTimes[fnNum] += cnt*avgtime
+      mathCnts_top[fnNum] += cnt_top
+      mathTimes_top[fnNum] += cnt_top*avgtime_top
+      break
+
+  if (found == 0) :
+    mathNames.append(routine)
+    mathCnts.append(cnt)     
+    mathTimes.append(cnt*avgtime)
+    mathCnts_top.append(cnt_top)     
+    mathTimes_top.append(cnt_top*avgtime_top)
+    
+
 #################################################
 # Collect all the data about LAPACK calls made
 #################################################
@@ -445,14 +477,14 @@ def process_components():
     
   # initialize variables
   # Five categories : 0 BLAS1, 1 BLAS2, 2 BLAS3, 3 LAPACK, 4 FFT
-  cnt = [0, 0, 0, 0, 0]
-  cnt_top = [0, 0, 0, 0, 0]
-  tottime = [ 0.0, 0.0, 0.0, 0.0, 0.0 ]
-  tottime_top = [ 0.0, 0.0, 0.0, 0.0, 0.0 ]
-  datatype_cnt=[0, 0, 0, 0]
-  datatype_time=[0.0,0.0,0.0,0.0]
-  datatype_cnt_top=[0, 0, 0, 0]
-  datatype_time_top=[0.0,0.0,0.0,0.0]
+  cnt = [0, 0, 0, 0, 0, 0]
+  cnt_top = [0, 0, 0, 0, 0, 0]
+  tottime = [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+  tottime_top = [ 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 ]
+  datatype_cnt=[0, 0, 0, 0, 0]
+  datatype_time=[0.0,0.0,0.0,0.0, 0.0]
+  datatype_cnt_top=[0, 0, 0, 0, 0]
+  datatype_time_top=[0.0,0.0,0.0,0.0, 0.0]
   lastroutine="NULL"
   lastcategory=-1
   datatype=-1
@@ -475,6 +507,12 @@ def process_components():
   lapackTimes = [ ]
   lapackCnts_top = [ ]
   lapackTimes_top = [ ]
+
+  mathNames = [  ]
+  mathCnts = [ ]
+  mathTimes = [ ]
+  mathCnts_top = [ ]
+  mathTimes_top = [ ]
   
   BLAS_ROUTINES=[
   	["rotg_", "rotmg_", "rot_", "rotm_", "swap_", "scal_", "copy_", "axpy_", "dot_", "dotu_", "dotc_", "nrm2_", "asum_", "amax_"],
@@ -482,7 +520,8 @@ def process_components():
   	["gemm_", "symm_", "hemm_", "syrk_", "herk_", "syr2k_", "her2k_", "trmm_", "trsm_"],
   	]
 
-# open input/output files
+  MATH_ROUTINES=["acosf","acosh","acoshf","acoshl","acosl","asin","asinf","asinh","asinhf","asinhl","asinl","atan","atan2","atan2f","atan2l","atanf","atanh","atanhf","atanhl","atanl","cbrt","cbrtf","cbrtl","ceil","ceilf","ceill","copysign","copysignf","copysignl","cos","cosf","cosh","coshf","coshl","cosl","erf","erfc","erfcf","erfcl","erff","erfl","exp","exp2","exp2f","exp2l","expf","expl","expm1","expm1f","expm1l","fabs","fabsf","fabsl","fdim","fdimf","fdiml","floor","floorf","floorl","fma","fmaf","fmal","fmax","fmaxf","fmaxl","fmin","fminf","fminl","fmod","fmodf","fmodl","frexp","frexpf","frexpl","hypot","hypotf","hypotl","ilogb","ilogbf","ilogbl","j0","j1","jn","ldexp","ldexpf","ldexpl","lgamma","lgammaf","lgammal","llrint","llrintf","llrintl","llround","llroundf","llroundl","log","log10","log10f","log10l","log1p","log1pf","log1pl","log2","log2f","log2l","logb","logbf","logbl","logf","logl","lrint","lrintf","lrintl","lround","lroundf","lroundl","modf","modff","modfl","nan","nanf","nanl","nearbyint","nearbyintf","nearbyintl","nextafter","nextafterf","nextafterl","nexttoward","nexttowardf","nexttowardl","pow","powf","powl","remainder","remainderf","remainderl","remquo","remquof","remquol","rint","rintf","rintl","round","roundf","roundl","scalb","scalbln","scalblnf","scalblnl","scalbn","scalbnf","scalbnl","sin","sinf","sinh","sinhf","sinhl","sinl","sqrt","sqrtf","sqrtl","tan","tanf","tanh","tanhf","tanhl","tanl","tgamma","tgammaf","tgammal","trunc","truncf","truncl","y0","y1","yn"]
+   # open input/output files
   # count the arguments
   nArguments = len(sys.argv) - 1
   
@@ -520,6 +559,9 @@ def process_components():
       # Quick get-out if it is the same as the previous
       if (routine == lastroutine) :
         category=lastcategory
+
+      if (routine in MATH_ROUTINES) :
+         category = 5
             
       # FFTs : does it have the string "fft" in the routine name?
       if (category == -1 or category==4) :
@@ -537,6 +579,10 @@ def process_components():
       # BLAS : Let's process this data
       if (category==0 or category==1 or category==2) :
         logBLAS(readline, blasNames[category], blasCnts[category], blasTimes[category], blasCnts_top[category], blasTimes_top[category])
+
+      # MATH : Process the data
+      if (category == 5) :
+        logMath(readline, mathNames, mathCnts, mathTimes, mathCnts_top, mathTimes_top)
 
       # LAPACK : Whatever's left!
       if (category == -1 or category==3) :
@@ -560,7 +606,7 @@ def process_components():
         tottime[category] = tottime[category]+float(newcnt)*float(newavgtime)
         cnt_top[category] = cnt_top[category]+int(newcnt_top)
         tottime_top[category] = tottime_top[category]+float(newcnt_top)*float(newavgtime_top)
-        if (datatype != -1) :
+        if (datatype != -1 and category != 5) :
           datatype_cnt[datatype] = datatype_cnt[datatype]+int(newcnt)
           datatype_time[datatype] = datatype_time[datatype]+float(newcnt)*float(newavgtime)
           datatype_cnt_top[datatype] = datatype_cnt_top[datatype]+int(newcnt_top)
@@ -581,6 +627,7 @@ def process_components():
   print( "BLAS level 3     : count %10s    total time %12.4f  user count %10s  user time %12.4f" % (cnt[2], tottime[2], cnt_top[2], tottime_top[2]) )
   print( "LAPACK           : count %10s    total time %12.4f  user count %10s  user time %12.4f" % (cnt[3], tottime[3], cnt_top[3], tottime_top[3]) )
   print( "FFT              : count %10s    total time %12.4f  user count %10s  user time %12.4f" % (cnt[4], tottime[4], cnt_top[4], tottime_top[4]) )
+  print( "MATH             : count %10s    total time %12.4f  user count %10s  user time %12.4f" % (cnt[5], tottime[5], cnt_top[5], tottime_top[5]) )
   print( " ")
   print( "Double precision : count %10s    total time %12.4f  user count %10s  user time %12.4f" % (datatype_cnt[0], datatype_time[0], datatype_cnt_top[0], datatype_time_top[0]))
   print( "Single precision : count %10s    total time %12.4f  user count %10s  user time %12.4f" % (datatype_cnt[1], datatype_time[1], datatype_cnt_top[1], datatype_time_top[1]))
@@ -676,6 +723,23 @@ def process_components():
     for i in range(0,len(lapackNames)) :
        print( "%8s     cnt= %10d  totTime= %12.4f called_tot= %10d  topTime= %12.4f    (%%age of runtime: %6.3f )" % (
           orderedTuple[i][0], orderedTuple[i][1], orderedTuple[i][2], orderedTuple[i][3], orderedTuple[i][4], orderedTuple[i][4]/float(total_run_time)*100.0))
+
+  #####
+  # Print MATH summary data if present
+  #####
+
+  if (len(mathNames)>0) :
+    print( " ")
+    print( "Math cases:")
+    print( "----------")
+  
+    # convert to a tuple for sorting
+    unorderedTuple = zip(mathNames, mathCnts, mathTimes, mathCnts_top, mathTimes_top)
+    orderedTuple = sorted(unorderedTuple, key=lambda field: field[2], reverse=True)
+    for i in range(0,len(mathNames)) :
+       print( "%8s     cnt= %10d  totTime= %12.4f called_tot= %10d  topTime= %12.4f    (%%age of runtime: %6.3f )" % (
+          orderedTuple[i][0], orderedTuple[i][1], orderedTuple[i][2], orderedTuple[i][3], orderedTuple[i][4], orderedTuple[i][4]/float(total_run_time)*100.0))
+
 
   #####
   # Generate 'armpl.blas' file for visualization afterwards
