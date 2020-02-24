@@ -26,7 +26,7 @@ preload-sumgen-math.c: src/makepreload-post.py
 libgeneric-summarylog.so: preload-sumgen-generic.c src/summary.c
 	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/$@ preload-sumgen.c summary.c -ldl
 
-preload-sumgen-generic.c: src/makepreloadlibsci-post.py 
+preload-sumgen-generic.c: src/makepreload-post.py 
 	cd src && python makepreload-post.py -i "PROTOTYPES_GENERIC"
 
 ## CBLAS Tracer - In Progress
