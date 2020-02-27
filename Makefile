@@ -1,6 +1,6 @@
 CFLAGS=-O3 -Wno-pointer-to-int-cast
 
-all: Makefile libarmpl-summarylog.so libarmpl-math-summarylog.so libgeneric-summarylog.so tools
+all: Makefile armpl armpl-math generic tools
 
 ## DEPRECATED LOGGING TOOL
 # libarmpl-logger.so: preload-gen.c src/logging.c src/PROTOTYPES
@@ -9,25 +9,26 @@ all: Makefile libarmpl-summarylog.so libarmpl-math-summarylog.so libgeneric-summ
 # 	cd src && python makepreload.py
 
 ## ARMPL Tracer
-libarmpl-summarylog.so: preload-sumgen.c src/summary.c
-	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/$@ preload-sumgen.c summary.c -ldl
+armpl: preload-sumgen.c src/summary.c
+	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/lib$@-summarylog.so preload-sumgen.c summary.c -ldl
+	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/lib$@-memlightlog.so preload-sumgen.c summary.c -ldl
 
-libarmpl-summarylog-memlight.so: preload-sumgen.c src/summary-lightweight.c
-	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/$@ preload-sumgen.c summary-lightweight.c -ldl
 
 preload-sumgen.c: src/makepreload-post.py 
 	cd src && python makepreload-post.py -i "PROTOTYPES"
 
-## ARMPL Tracer with Math Library
-libarmpl-math-summarylog.so: preload-sumgen-math.c src/summary.c
-	cd src && gcc -fPIC ${CFLAGS} -Wno-incompatible-library-redeclaration -shared -o ../lib/$@ preload-sumgen.c summary.c -ldl
+## ARMPL+MATH Tracer
+armpl-math: preload-sumgen-math.c src/summary.c
+	cd src && gcc -fPIC ${CFLAGS} -Wno-incompatible-library-redeclaration -shared -o ../lib/lib$@-summarylog.so preload-sumgen.c summary.c -ldl
+	cd src && gcc -fPIC ${CFLAGS} -Wno-incompatible-library-redeclaration -shared -o ../lib/lib$@-memlightlog.so preload-sumgen.c summary.c -ldl
 
 preload-sumgen-math.c: src/makepreload-post.py 
 	cd src && python makepreload-post.py -i "PROTOTYPES_MATH"
 
 ## Generic BLAS Tracer
-libgeneric-summarylog.so: preload-sumgen-generic.c src/summary.c
-	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/$@ preload-sumgen.c summary.c -ldl
+generic: preload-sumgen-generic.c src/summary.c
+	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/lib$@-summarylog.so preload-sumgen.c summary.c -ldl
+	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/lib$@-memlightlog.so preload-sumgen.c summary-lightweight.c -ldl
 
 preload-sumgen-generic.c: src/makepreload-post.py 
 	cd src && python makepreload-post.py -i "PROTOTYPES_GENERIC"
