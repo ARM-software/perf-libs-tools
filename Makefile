@@ -12,6 +12,9 @@ all: Makefile libarmpl-summarylog.so libarmpl-math-summarylog.so libgeneric-summ
 libarmpl-summarylog.so: preload-sumgen.c src/summary.c
 	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/$@ preload-sumgen.c summary.c -ldl
 
+libarmpl-summarylog-light.so: preload-sumgen.c src/summary-lightweight.c
+	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/$@ preload-sumgen.c summary-lightweight.c -ldl
+
 preload-sumgen.c: src/makepreload-post.py 
 	cd src && python makepreload-post.py -i "PROTOTYPES"
 

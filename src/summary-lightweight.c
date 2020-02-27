@@ -17,7 +17,6 @@ void armpl_summary_exit()
   armpl_lnkdlst_t *nextEntry = listHead;
   FILE *fptr;
   char fname[64];
-  static int firsttime=0;
   struct timespec armpl_progstop;
   double printingtime;
   char *USERENV=NULL, name_root[64];
@@ -35,33 +34,33 @@ void armpl_summary_exit()
   else
   	sprintf(name_root, "/tmp/armplsummary_");
   sprintf(fname, "%s%.5d.apl", name_root, armpl_get_value_int());
-  fptr = fopen(fname, "w");
+  fptr = fopen(fname, "a");
 
   fprintf(fptr, "Routine: main  nCalls: 1  Total_time %12.6e nCalls: 1  Total_time %12.6e \n", 
   	armpl_progstop.tv_sec - armpl_progstart.tv_sec + 1.0e-9*(armpl_progstop.tv_nsec - armpl_progstart.tv_nsec), 
   	armpl_progstop.tv_sec - armpl_progstart.tv_sec + 1.0e-9*(armpl_progstop.tv_nsec - armpl_progstart.tv_nsec));
 
-  while (NULL != listEntry)
-  {
-  	thisEntry = listEntry;
-  	nextEntry = listEntry->nextRoutine;
-  	do
-  	{
-  		if (listEntry->callCount_top>0)
-  		{
-  			printingtime = listEntry->timeTotal_top/listEntry->callCount_top;
-  		} else {
-  			printingtime = 0.0;
-  		}
-  		fprintf(fptr, "Routine: %8s  nCalls: %6d  Mean_time %12.6e   nUserCalls: %6d  Mean_user_time: %12.6e   Inputs: %s\n", 
-  				thisEntry->routineName, listEntry->callCount, listEntry->timeTotal/listEntry->callCount, 
-  				listEntry->callCount_top, printingtime,
-  				listEntry->inputsString);
-		listEntry = listEntry->nextCase;
-	} while (NULL != listEntry);
+  // while (NULL != listEntry)
+  // {
+  // 	thisEntry = listEntry;
+  // 	nextEntry = listEntry->nextRoutine;
+  // 	do
+  // 	{
+  // 		if (listEntry->callCount_top>0)
+  // 		{
+  // 			printingtime = listEntry->timeTotal_top/listEntry->callCount_top;
+  // 		} else {
+  // 			printingtime = 0.0;
+  // 		}
+  // 		fprintf(fptr, "Routine: %8s  nCalls: %6d  Mean_time %12.6e   nUserCalls: %6d  Mean_user_time: %12.6e   Inputs: %s\n", 
+  // 				thisEntry->routineName, listEntry->callCount, listEntry->timeTotal/listEntry->callCount, 
+  // 				listEntry->callCount_top, printingtime,
+  // 				listEntry->inputsString);
+	// 	listEntry = listEntry->nextCase;
+	// } while (NULL != listEntry);
 	
-	listEntry = nextEntry;
-  }
+	// listEntry = nextEntry;
+  // }
 
   fclose(fptr);
   printf("Arm Performance Libraries output summary stored in %s\n", fname);
@@ -111,12 +110,20 @@ void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numV
 void armpl_logging_leave(armpl_logging_struct *logger, ...)
 {
   int i, j, dimension=0, loc=0, found;
-  static FILE *fptr;
+  // static FILE *fptr;
   armpl_lnkdlst_t *listEntry = listHead;
   int stringLen, totToStore;
   char *inputString;
   va_list ap;
   clock_gettime(CLOCK_MONOTONIC, &logger->ts_end);
+
+  armpl_lnkdlst_t *thisEntry = listHead;
+  armpl_lnkdlst_t *nextEntry = listHead;
+  FILE *fptr;
+  char fname[64];
+  struct timespec armpl_progstop;
+  double printingtime;
+  char *USERENV=NULL, name_root[64];
 
   while (logger->ts_end.tv_nsec - logger->ts_start.tv_nsec < 0 ) { logger->ts_end.tv_nsec+=1000000000; logger->ts_end.tv_sec-=1;}
   while (logger->ts_end.tv_nsec - logger->ts_start.tv_nsec > 1000000000 ) { logger->ts_end.tv_nsec-=1000000000; logger->ts_end.tv_sec+=1;}
@@ -288,6 +295,28 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
   }
   if (logger->numIargs > 1) free(logger->Iinp);
   if (logger->numCargs > 0) free(logger->Cinp);
+
+    /* Generate a "unique" filename for the output */
+  USERENV = getenv("ARMPL_SUMMARY_FILEROOT");
+  if (USERENV!=NULL && strlen(USERENV)>1) 
+  	sprintf(name_root, "%s", USERENV);
+  else
+  	sprintf(name_root, "/tmp/armplsummary_");
+  sprintf(fname, "%s%.5d.apl", name_root, armpl_get_value_int());
+  fptr = fopen(fname, "a");
+
+
+	if (listEntry->callCount_top>0)
+	{
+		printingtime = listEntry->timeTotal_top/listEntry->callCount_top;
+	} else {
+		printingtime = 0.0;
+	}
+	fprintf(fptr, "Routine: %8s  nCalls: %6d  Mean_time %12.6e   nUserCalls: %6d  Mean_user_time: %12.6e   Inputs: %s\n", 
+			thisEntry->routineName, listEntry->callCount, listEntry->timeTotal/listEntry->callCount, 
+			listEntry->callCount_top, printingtime,
+			listEntry->inputsString);
+  fclose(fptr);
 }
 
 /* Utility functions for accessing global data */
