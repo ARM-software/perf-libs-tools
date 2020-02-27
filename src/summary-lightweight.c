@@ -39,10 +39,6 @@ void armpl_summary_exit()
   sprintf(fname, "%s%.5d.apl", name_root, armpl_get_value_int());
   fptr = fopen(fname, "a");
 
-  fprintf(fptr, "Routine: main  nCalls: 1  Total_time %12.6e nCalls: 1  Total_time %12.6e \n", 
-  	armpl_progstop.tv_sec - armpl_progstart.tv_sec + 1.0e-9*(armpl_progstop.tv_nsec - armpl_progstart.tv_nsec), 
-  	armpl_progstop.tv_sec - armpl_progstart.tv_sec + 1.0e-9*(armpl_progstop.tv_nsec - armpl_progstart.tv_nsec));
-
    while (NULL != listEntry)
    {
    	thisEntry = listEntry;
@@ -65,6 +61,10 @@ void armpl_summary_exit()
 	 listEntry = nextEntry;
    }
 
+  fprintf(fptr, "Routine: main  nCalls: 1  Total_time %12.6e nCalls: 1  Total_time %12.6e \n", 
+  	armpl_progstop.tv_sec - armpl_progstart.tv_sec + 1.0e-9*(armpl_progstop.tv_nsec - armpl_progstart.tv_nsec), 
+  	armpl_progstop.tv_sec - armpl_progstart.tv_sec + 1.0e-9*(armpl_progstop.tv_nsec - armpl_progstart.tv_nsec));
+
   fclose(fptr);
   printf("Arm Performance Libraries output summary stored in %s\n", fname);
   return;
@@ -82,7 +82,6 @@ void armpl_summary_dump()
   double printingtime;
   char *USERENV=NULL, name_root[64];
 
-  printf("Dumping\n"); 
  
   /* Generate a "unique" filename for the output */
   USERENV = getenv("ARMPL_SUMMARY_FILEROOT");
@@ -119,7 +118,6 @@ void armpl_summary_dump()
 
   listHead = NULL;
   
-  printf("Dumping complete\n"); 
 }
 
 /* Routine called at start of ARMPL function to record details of function call into the logger structure */
