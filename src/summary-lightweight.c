@@ -76,6 +76,7 @@ void armpl_summary_dump()
   armpl_lnkdlst_t *listEntry = listHead;
   armpl_lnkdlst_t *thisEntry = listHead;
   armpl_lnkdlst_t *nextEntry = listHead;
+  armpl_lnkdlst_t *prevEntry = listHead;
   FILE *fptr;
   char fname[64];
   struct timespec armpl_progstop;
@@ -108,9 +109,14 @@ void armpl_summary_dump()
   				thisEntry->routineName, listEntry->callCount, listEntry->timeTotal/listEntry->callCount, 
   				listEntry->callCount_top, printingtime,
   				listEntry->inputsString);
+		prevEntry = listEntry;
 		listEntry = listEntry->nextCase;
+                if(NULL != listEntry) free(prevEntry);
 	} while (NULL != listEntry);
 	
+        free(prevEntry->routineName);
+        free(prevEntry->inputsString);
+        free(prevEntry);
 	listEntry = nextEntry;
   }
 
@@ -119,6 +125,8 @@ void armpl_summary_dump()
   listHead = NULL;
   
 }
+
+
 
 /* Routine called at start of ARMPL function to record details of function call into the logger structure */
 
