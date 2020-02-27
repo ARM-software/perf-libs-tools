@@ -6,9 +6,10 @@
 
 #include "summary.h"
 
-#define MAX_INFLIGHT_FUNCTIONS 500
+#define MAX_INFLIGHT_FUNCTIONS 1500
 
 armpl_lnkdlst_t *listHead = NULL;
+static int inflight_functions = 0;
 
 /* Routine to record log on standard program exits */
 
@@ -42,27 +43,27 @@ void armpl_summary_exit()
   	armpl_progstop.tv_sec - armpl_progstart.tv_sec + 1.0e-9*(armpl_progstop.tv_nsec - armpl_progstart.tv_nsec), 
   	armpl_progstop.tv_sec - armpl_progstart.tv_sec + 1.0e-9*(armpl_progstop.tv_nsec - armpl_progstart.tv_nsec));
 
-  // while (NULL != listEntry)
-  // {
-  // 	thisEntry = listEntry;
-  // 	nextEntry = listEntry->nextRoutine;
-  // 	do
-  // 	{
-  // 		if (listEntry->callCount_top>0)
-  // 		{
-  // 			printingtime = listEntry->timeTotal_top/listEntry->callCount_top;
-  // 		} else {
-  // 			printingtime = 0.0;
-  // 		}
-  // 		fprintf(fptr, "Routine: %8s  nCalls: %6d  Mean_time %12.6e   nUserCalls: %6d  Mean_user_time: %12.6e   Inputs: %s\n", 
-  // 				thisEntry->routineName, listEntry->callCount, listEntry->timeTotal/listEntry->callCount, 
-  // 				listEntry->callCount_top, printingtime,
-  // 				listEntry->inputsString);
-	// 	listEntry = listEntry->nextCase;
-	// } while (NULL != listEntry);
+   while (NULL != listEntry)
+   {
+   	thisEntry = listEntry;
+   	nextEntry = listEntry->nextRoutine;
+   	do
+   	{
+   		if (listEntry->callCount_top>0)
+   		{
+   			printingtime = listEntry->timeTotal_top/listEntry->callCount_top;
+   		} else {
+   			printingtime = 0.0;
+   		}
+   		fprintf(fptr, "Routine: %8s  nCalls: %6d  Mean_time %12.6e   nUserCalls: %6d  Mean_user_time: %12.6e   Inputs: %s\n", 
+   				thisEntry->routineName, listEntry->callCount, listEntry->timeTotal/listEntry->callCount, 
+   				listEntry->callCount_top, printingtime,
+   				listEntry->inputsString);
+	 	listEntry = listEntry->nextCase;
+	 } while (NULL != listEntry);
 	
-	// listEntry = nextEntry;
-  // }
+	 listEntry = nextEntry;
+   }
 
   fclose(fptr);
   printf("Arm Performance Libraries output summary stored in %s\n", fname);
@@ -81,7 +82,8 @@ void armpl_summary_dump()
   double printingtime;
   char *USERENV=NULL, name_root[64];
 
-  
+  printf("Dumping\n"); 
+ 
   /* Generate a "unique" filename for the output */
   USERENV = getenv("ARMPL_SUMMARY_FILEROOT");
   if (USERENV!=NULL && strlen(USERENV)>1) 
@@ -117,6 +119,7 @@ void armpl_summary_dump()
 
   listHead = NULL;
   
+  printf("Dumping complete\n"); 
 }
 
 /* Routine called at start of ARMPL function to record details of function call into the logger structure */
@@ -124,10 +127,10 @@ void armpl_summary_dump()
 void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numVinps, int numIinps, int numCinps, int dimension)
 {
   int totToStore;
-  static int firsttime=1;
-  if (1==firsttime) 
+  //static int firsttime=1;
+  if (0==inflight_functions) 
   {
-  	firsttime = 0;
+  	//firsttime = 0;
   	armpl_enable_summary_list();
   }
 
@@ -162,7 +165,6 @@ void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numV
 void armpl_logging_leave(armpl_logging_struct *logger, ...)
 {
   int i, j, dimension=0, loc=0, found;
-  static int inflight_functions = 0;
   // static FILE *fptr;
   armpl_lnkdlst_t *listEntry = listHead;
   int stringLen, totToStore;
@@ -341,7 +343,7 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
   if (logger->numIargs > 1) free(logger->Iinp);
   if (logger->numCargs > 0) free(logger->Cinp);
 
-  if (++inflight_functions > MAX_INFLIGHT_FUNCTIONS)
+  if (++inflight_functions >= MAX_INFLIGHT_FUNCTIONS)
   {
     armpl_summary_dump();
     inflight_functions = 0;
@@ -357,20 +359,20 @@ int armpl_get_value_int(void) {
 
 void armpl_enable_summary_list(void) {
 	static int firsttime = 1;
+	
+
+	/* Create linked lists */
+	listHead = malloc(sizeof(armpl_lnkdlst_t));
+	
+	listHead->callCount=-1;
+    	listHead->nextRoutine = NULL;
+	listHead->nextCase = NULL;
 	if (firsttime==1)
 	{
 		firsttime = 0;
-
 		/* Register exit function */
 		atexit(armpl_summary_exit);
 		
-		/* Create linked lists */
-		listHead = malloc(sizeof(armpl_lnkdlst_t));
-		
-		listHead->callCount=-1;
-    
-		listHead->nextRoutine = NULL;
-		listHead->nextCase = NULL;
 		
 		clock_gettime(CLOCK_MONOTONIC, &armpl_progstart);
 
