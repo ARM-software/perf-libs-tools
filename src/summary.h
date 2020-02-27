@@ -54,6 +54,7 @@ int toplevel_global;
 extern "C" {
 #endif
 void armpl_summary_exit();
+void armpl_summary_dump();
 void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numVinps, int numIinps, int numCinps, int dimension);
 void armpl_logging_leave(armpl_logging_struct *logger, ...);
 int armpl_get_value_int(void);
