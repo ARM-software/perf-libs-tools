@@ -1,2 +1,3 @@
 src/preload-sumgen.c
+*.apl
 tools/Process-dgemm
