@@ -20,37 +20,40 @@
 
 
 ## Compiling 
+
 ### Build ARMPL Tracer
 
 1. Ensure that you are using the latest version of the logging library to match 
    your build of Arm Performance Libraries.  This version matches 19.3.
 
-2. From the top level directory type `make libarmpl-summarylog.so`.
+2. From the top level directory type `make armpl`.
 
-You should now have a "lib/libarmpl-summarylog.so" created.
+You should now have created both "lib/libarmpl-summarylog.so" and "lib/libarmpl-memlightlog.so".
 
 ### Build ARMPL Tracer with LibMath
 
 1. Ensure that you are using the latest version of the logging library to match 
    your build of Arm Performance Libraries.  This version matches 19.3.
 
-2. From the top level directory type `make libarmpl-math-summarylog.so`.
+2. From the top level directory type `make armpl-math`.
 
-You should now have a "lib/libarmpl-math-summarylog.so" created.
+You should now have created a "lib/libarmpl-math-summarylog.so" and "lib/libarmpl-math-memlightlog.so".
 
 ### Build Generic BLAS+LAPACK+FFT Tracer
 
-1. From the top level directory type `make libgeneric-summarylog.so`.
+1. From the top level directory type `make generic`.
 
-You should now have a "lib/generic-summarylog.so" created.
+You should now have created a "lib/generic-summarylog.so" and "lib/generic-memlightlog.so".
 
 **Note:** The tracer has not currently been tested with other FFT libraries
+
+
 
 ## Usage
 
 1. Use LD_PRELOAD to pick-up the newly created logging library:
   ```shell
-  export LD_PRELOAD=$PWD/lib/<tracer>-summarylog.so
+  export LD_PRELOAD=$PWD/lib/<tracer>.so
   ```
 
 2. When you are building your application ensure that you are linking in 
