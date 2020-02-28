@@ -6,10 +6,10 @@
 
 #include "summary.h"
 
-#define MAX_INFLIGHT_FUNCTIONS 5000
+#define MAX_INFLIGHT_FUNCTIONS 300 
 
 armpl_lnkdlst_t *listHead = NULL;
-static int inflight_functions = 0;
+static int unique_fn_calls = 0;
 
 /* Routine to record log on standard program exits */
 
@@ -29,7 +29,6 @@ void armpl_summary_exit()
   while (armpl_progstop.tv_nsec - armpl_progstart.tv_nsec < 0 ) { armpl_progstop.tv_nsec+=1000000000; armpl_progstop.tv_sec-=1;}
   while (armpl_progstop.tv_nsec - armpl_progstart.tv_nsec > 1000000000 ) { armpl_progstop.tv_nsec-=1000000000; armpl_progstop.tv_sec+=1;}
 
-  
   /* Generate a "unique" filename for the output */
   USERENV = getenv("ARMPL_SUMMARY_FILEROOT");
   if (USERENV!=NULL && strlen(USERENV)>1) 
@@ -74,9 +73,9 @@ void armpl_summary_exit()
 void armpl_summary_dump()
 {
   armpl_lnkdlst_t *listEntry = listHead;
-  armpl_lnkdlst_t *thisEntry = listHead;
   armpl_lnkdlst_t *nextEntry = listHead;
   armpl_lnkdlst_t *prevEntry = listHead;
+  char *currRoutineName  = NULL;
   FILE *fptr;
   char fname[64];
   struct timespec armpl_progstop;
@@ -95,7 +94,7 @@ void armpl_summary_dump()
 
   while (NULL != listEntry)
   {
-  	thisEntry = listEntry;
+  	currRoutineName = listEntry->routineName;
   	nextEntry = listEntry->nextRoutine;
   	do
   	{
@@ -106,24 +105,23 @@ void armpl_summary_dump()
   			printingtime = 0.0;
   		}
   		fprintf(fptr, "Routine: %8s  nCalls: %6d  Mean_time %12.6e   nUserCalls: %6d  Mean_user_time: %12.6e   Inputs: %s\n", 
-  				thisEntry->routineName, listEntry->callCount, listEntry->timeTotal/listEntry->callCount, 
+  			currRoutineName, listEntry->callCount, listEntry->timeTotal/listEntry->callCount, 
   				listEntry->callCount_top, printingtime,
   				listEntry->inputsString);
 		prevEntry = listEntry;
+        	free(listEntry->inputsString);
 		listEntry = listEntry->nextCase;
-                if(NULL != listEntry) free(prevEntry);
+                free(prevEntry);
 	} while (NULL != listEntry);
 	
-        free(prevEntry->routineName);
-        free(prevEntry->inputsString);
-        free(prevEntry);
+        free(currRoutineName);
 	listEntry = nextEntry;
   }
 
   fclose(fptr);
 
   listHead = NULL;
-  
+  unique_fn_calls = 0;
 }
 
 
@@ -134,7 +132,7 @@ void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numV
 {
   int totToStore;
   //static int firsttime=1;
-  if (0==inflight_functions) 
+  if (0==unique_fn_calls) 
   {
   	//firsttime = 0;
   	armpl_enable_summary_list();
@@ -177,6 +175,7 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
   char *inputString;
   va_list ap;
   clock_gettime(CLOCK_MONOTONIC, &logger->ts_end);
+
 
   while (logger->ts_end.tv_nsec - logger->ts_start.tv_nsec < 0 ) { logger->ts_end.tv_nsec+=1000000000; logger->ts_end.tv_sec-=1;}
   while (logger->ts_end.tv_nsec - logger->ts_start.tv_nsec > 1000000000 ) { logger->ts_end.tv_nsec-=1000000000; logger->ts_end.tv_sec+=1;}
@@ -259,6 +258,7 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
 	listEntry = listHead;
 	if (listEntry->callCount==-1)		/* New list */
 	{
+			++unique_fn_calls;
 			listEntry->routineName = malloc(sizeof(char)*strlen(logger->NAME)+1);
 			sprintf(listEntry->routineName, "%s", logger->NAME);
 		
@@ -268,10 +268,13 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
 			listEntry->timeTotal = 0.0;
 			listEntry->callCount_top = 0;
 			listEntry->timeTotal_top = 0.0;
-	} else if (listEntry->nextRoutine==NULL && 0==strcmp(listEntry->routineName, logger->NAME))
+	} 
+	else if (listEntry->nextRoutine==NULL && 0==strcmp(listEntry->routineName, logger->NAME))
 	{			/* first entry */
-			found=1;
-	} else {			/* Existing list */
+		found=1;
+	} 
+	else 
+	{			/* Existing list */
 		while (1)
 		{
 			if (0==strcmp(listEntry->routineName, logger->NAME))
@@ -286,6 +289,7 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
 		/* else:  new routine */
 		if (0 == found) 
 		{
+			++unique_fn_calls;
 			listEntry->nextRoutine = malloc(sizeof(armpl_lnkdlst_t));
 			listEntry = listEntry->nextRoutine;
 		
@@ -302,7 +306,6 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
 			listEntry->nextCase = NULL;
 		}
 	}
-
 	if (1 == found)
 	{
 		/* Loop over current cases */
@@ -317,6 +320,9 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
 			{
 				listEntry = listEntry->nextCase;
 			} else {
+				
+				unique_fn_calls++;
+				//printf("Unique Routine Count %d\n", ++unique_fn_calls);
 				listEntry->nextCase  = malloc(sizeof(armpl_lnkdlst_t));
 				listEntry = listEntry->nextCase;
 				
@@ -333,7 +339,6 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
 	
 	}
 
-
 	/* Now update totals for this routine */
 	listEntry->callCount++;
 	listEntry->timeTotal += logger->ts_end.tv_sec - logger->ts_start.tv_sec + 1.0e-9*(logger->ts_end.tv_nsec - logger->ts_start.tv_nsec);
@@ -349,10 +354,10 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
   if (logger->numIargs > 1) free(logger->Iinp);
   if (logger->numCargs > 0) free(logger->Cinp);
 
-  if (++inflight_functions >= MAX_INFLIGHT_FUNCTIONS)
+  if (unique_fn_calls > MAX_INFLIGHT_FUNCTIONS && 0==toplevel_global)
   {
+    
     armpl_summary_dump();
-    inflight_functions = 0;
   }
   
 }

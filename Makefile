@@ -11,7 +11,7 @@ all: Makefile armpl armpl-math generic tools
 ## ARMPL Tracer
 armpl: preload-sumgen.c src/summary.c
 	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/lib$@-summarylog.so preload-sumgen.c summary.c -ldl
-	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/lib$@-memlightlog.so preload-sumgen.c summary.c -ldl
+	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/lib$@-memlightlog.so preload-sumgen.c summary-memlight.c -ldl
 
 
 preload-sumgen.c: src/makepreload-post.py 
@@ -20,7 +20,7 @@ preload-sumgen.c: src/makepreload-post.py
 ## ARMPL+MATH Tracer
 armpl-math: preload-sumgen-math.c src/summary.c
 	cd src && gcc -fPIC ${CFLAGS} -Wno-incompatible-library-redeclaration -shared -o ../lib/lib$@-summarylog.so preload-sumgen.c summary.c -ldl
-	cd src && gcc -fPIC ${CFLAGS} -Wno-incompatible-library-redeclaration -shared -o ../lib/lib$@-memlightlog.so preload-sumgen.c summary.c -ldl
+	cd src && gcc -fPIC ${CFLAGS} -Wno-incompatible-library-redeclaration -shared -o ../lib/lib$@-memlightlog.so preload-sumgen.c summary-memlight.c -ldl
 
 preload-sumgen-math.c: src/makepreload-post.py 
 	cd src && python makepreload-post.py -i "PROTOTYPES_MATH"
@@ -28,7 +28,7 @@ preload-sumgen-math.c: src/makepreload-post.py
 ## Generic BLAS Tracer
 generic: preload-sumgen-generic.c src/summary.c
 	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/lib$@-summarylog.so preload-sumgen.c summary.c -ldl
-	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/lib$@-memlightlog.so preload-sumgen.c summary-lightweight.c -ldl
+	cd src && gcc -fPIC ${CFLAGS} -shared -o ../lib/lib$@-memlightlog.so preload-sumgen.c summary-memlight.c -ldl
 
 preload-sumgen-generic.c: src/makepreload-post.py 
 	cd src && python makepreload-post.py -i "PROTOTYPES_GENERIC"
