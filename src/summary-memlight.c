@@ -6,7 +6,7 @@
 
 #include "summary.h"
 
-#define MAX_INFLIGHT_FUNCTIONS 300 
+#define MAX_INFLIGHT_FUNCTIONS 7000 
 
 armpl_lnkdlst_t *listHead = NULL;
 static int unique_fn_calls = 0;
