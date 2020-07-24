@@ -21,7 +21,7 @@ then
 	echo "  $ gcc -o Process-dgemm process-dgemm.c"
 fi
 
-TMPFILE=/tmp/.inp-$USER
+TMPFILE=/tmp/.inp-${USER}_[dszc]
 
 rm -f $TMPFILE
 for file in $*
@@ -40,4 +40,4 @@ done
 echo "GEMM data created.  Visualize using, for example"
 echo "   $ ./heat_dgemm.py -i /tmp/armpl.dgemm"
 
-rm -f $TMPFILE
+rm -f ${TMPFILE}_[dszc]

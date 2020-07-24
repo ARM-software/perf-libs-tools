@@ -35,7 +35,7 @@ from matplotlib.patches import Shadow
 
 
 def main(args=None):
-    print 'Process full dataset'
+    print('Process full dataset')
 #    args = parse_options()
 
     process_components()
@@ -66,11 +66,11 @@ def process_components():
   for position in range (1, nArguments+1) :
 
     # open file
-    print "Opening file %s" % sys.argv[position]
+    print("Opening file %s" % sys.argv[position])
     if os.path.isfile(sys.argv[position]) and os.access(sys.argv[position], os.R_OK):
         inputfile = open(sys.argv[position])
     else :
-        print "File >>>%s<<< is not readable.  Skipping..." % sys.argv[position]
+        print("File >>>%s<<< is not readable.  Skipping..." % sys.argv[position])
         continue
     
     # read file    
@@ -113,7 +113,7 @@ def process_components():
         category=3
       
 #      if (category==2) :
-#            print routine, float(newcnt)*float(newavgtime), tottime[2]
+#            print(routine, float(newcnt)*float(newavgtime), tottime[2])
 
       # Find datatype (for most routines)
       if (routine[0]=='d') :
@@ -123,7 +123,7 @@ def process_components():
       elif (routine[0]=='z') :
         datatype=2
       elif (routine[0]=='c') :
-        print routine
+        print(routine)
         datatype=3
         
       # Store data in correct set
@@ -137,16 +137,16 @@ def process_components():
       lastroutine=routine
       lastcategory=category
 
-  print "BLAS level 1     : count %8s    total time %12.4f" % (cnt[0], tottime[0]) 
-  print "BLAS level 2     : count %8s    total time %12.4f" % (cnt[1], tottime[1]) 
-  print "BLAS level 3     : count %8s    total time %12.4f" % (cnt[2], tottime[2]) 
-  print "LAPACK           : count %8s    total time %12.4f" % (cnt[3], tottime[3]) 
-  print "FFT              : count %8s    total time %12.4f" % (cnt[4], tottime[4]) 
-  print " "
-  print "Double precision : count %8s    total time %12.4f" % (datatype_cnt[0], datatype_time[0])
-  print "Single precision : count %8s    total time %12.4f" % (datatype_cnt[1], datatype_time[1])
-  print "Double complex   : count %8s    total time %12.4f" % (datatype_cnt[2], datatype_time[2])
-  print "Single complex   : count %8s    total time %12.4f" % (datatype_cnt[3], datatype_time[3])
+  print("BLAS level 1     : count %8s    total time %12.4f" % (cnt[0], tottime[0]) )
+  print("BLAS level 2     : count %8s    total time %12.4f" % (cnt[1], tottime[1]) )
+  print("BLAS level 3     : count %8s    total time %12.4f" % (cnt[2], tottime[2]) )
+  print("LAPACK           : count %8s    total time %12.4f" % (cnt[3], tottime[3]) )
+  print("FFT              : count %8s    total time %12.4f" % (cnt[4], tottime[4]) )
+  print(" ")
+  print("Double precision : count %8s    total time %12.4f" % (datatype_cnt[0], datatype_time[0]))
+  print("Single precision : count %8s    total time %12.4f" % (datatype_cnt[1], datatype_time[1]))
+  print("Double complex   : count %8s    total time %12.4f" % (datatype_cnt[2], datatype_time[2]))
+  print("Single complex   : count %8s    total time %12.4f" % (datatype_cnt[3], datatype_time[3]))
 
 # Footer for catching no main
 if __name__ == '__main__':

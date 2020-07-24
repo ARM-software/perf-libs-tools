@@ -1,5 +1,5 @@
 ================================================================================
-perf-libs-tools          Copyright 2017-9 Arm Limited        All rights reserved
+perf-libs-tools         Copyright 2017-20 Arm Limited        All rights reserved
 ================================================================================
 
 Tools to support Arm Performance Libraries
@@ -24,10 +24,10 @@ Compiling
 ---------
 
 1) Ensure that you are using the latest version of the logging library to match 
-   your build of Arm Performance Libraries.  This version matches 19.3.  Note 
+   your build of Arm Performance Libraries.  This version matches 20.2.  Note 
    you can build using either GCC or Arm Compiler, however an Arm Performance 
    Libraries or Arm Compiler module must have been loaded to add the correct 
-   directory containing 'armpl.h' to your path.
+   directory containing 'armpl.h' to your path..
 
 2) From this top level directory type "make".
 
@@ -41,6 +41,11 @@ Usage
 
      export LD_PRELOAD=$PWD/lib/libarmpl-summarylog.so
 
+   If your application is itself threaded you should use the library
+   libarmpl_mp-summarylog.so instead as this will enable correct logging from 
+   the different threads all calling Arm Performance Libraries functions 
+   concurrently.
+
 2) When you are building your application ensure that you are linking in 
    the shared library (e.g. libarmpl_lp64_mp.so) 
    rather than the static library (e.g. libarmpl_lp64_mp.a).
@@ -50,13 +55,8 @@ Usage
    /tmp/armplsummary_<pid>.apl where <pid> is the process ID.
    Note an extra line is added to the output of your program reading 
    
-   Arm Performance Libraries output summary stored by default in files named
+  Arm Performance Libraries output summary stored by default in files named
   
-     /tmp/armplsummary_16776.apl 
-    
-  with the appropriate PID included.  The root of this can be modified using
-  the environment variable ARMPL_SUMMARY_FILEROOT.  
-
      /tmp/armplsummary_16776.apl 
    
   with the appropriate PID included.  The root of this can be modified using
@@ -146,7 +146,7 @@ before following the instructions below.
 ---DGEMM calls---
 
 ./process-dgemm.sh <input files>
-    This produces summary information about ?GEMM calls made in an application.
+    This produces summary information about GEMM calls made in an application.
 
     Input: One or more /tmp/armplsummary_<pid>.apl files.
     Output: /tmp/armpl.dgemm
@@ -226,11 +226,10 @@ Known issues
   zdotc_ and zdotu_ from src/PROTOTYPES.  For convenience these are the first 
   four lines of that file.
 
-* The top level call timings do not work when called from within a multithreaded 
-  environment.  Setting OMP_NUM_THREADS=1 is recommended for useful output from
-  perf-libs-tools.
+* The top level call timings do not work when called from within a nested OpenMP 
+  parallel regions.  Set your code to use only one level of OpenMP.
 
-* For certain codes that create extortionate numbers of FFTW plans then it may 
+* For certain codes that create enormous numbers of FFTW plans then it may 
   be necessary to prevent trying to match plans with executes.  This situation 
   would result in a significant, and worsening, run-time performance of the 
   application.  This is not detailed here, but instructions can be made 

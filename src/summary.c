@@ -1,10 +1,14 @@
 /*
     perf-libs-tools
-    Copyright 2017 Arm Limited. 
+    Copyright 2017-20 Arm Limited. 
     All rights reserved.
 */
 
 #include "summary.h"
+
+#ifdef _OPENMP
+#include <omp.h>
+#endif
 
 armpl_lnkdlst_t *listHead = NULL;
 
@@ -73,7 +77,9 @@ void armpl_summary_exit()
 void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numVinps, int numIinps, int numCinps, int dimension)
 {
   int totToStore;
-  static int firsttime=1;
+  static int firsttime=1, firstthread=1;
+  int *tmpI;
+
   if (1==firsttime) 
   {
   	firsttime = 0;
@@ -94,12 +100,71 @@ void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numV
   	logger->topLevel = 0;
   }
 
-  totToStore = logger->numIargs;
-  if (logger->numVargs>0) totToStore += logger->numVargs*dimension+1;
-
-  if (totToStore>0)
+#ifndef _OPENMP
+  if (toplevel_global==0)
   {
-  	logger->Iinp = malloc(sizeof(int)*totToStore);
+  	toplevel_global = 1;
+  	logger->topLevel = 1;
+  } else {
+  	logger->topLevel = 0;
+  }
+#else
+#pragma omp critical
+{
+  if (!omp_in_parallel() && logger->topLevel==2) /* i.e. were we previously in a parallel region but not any more, hence must be at the top level */
+  {
+	toplevel_global = 0;
+	/* Note we don't need to clear toplevel_thread_global as all entries should already have been set to 0 */
+  }
+
+  if (toplevel_global==0)
+  {
+	/* Check if we are already in an OpenMP parallel section */
+	if (!omp_in_parallel())
+	{
+		logger->topLevel = 1;
+		toplevel_global = 1;
+	} else {
+		logger->topLevel = 2;
+		toplevel_global = 2;
+		{
+			if (firstthread==1)
+			{
+				threadtot = omp_get_num_threads();
+				printf("Allocating array length %d on thread %d...\n", threadtot, omp_get_thread_num());
+				toplevel_thread_global = calloc(threadtot, sizeof(int));
+				blas_top_openmp_level = omp_get_level();
+				firstthread = 0;
+			}
+		}
+		toplevel_thread_global[omp_get_thread_num()] = 1;
+	}
+  } else if (toplevel_global==1){
+  	logger->topLevel = 0;
+  } else /*i.e. toplevel_global==2 */ {
+	if (omp_get_level()>blas_top_openmp_level)	/* in a nested parallelism region */
+	{
+		logger->topLevel = 0;
+	} else if (toplevel_thread_global[omp_get_thread_num()]==0)	/* Top level for this thread */
+	{
+		toplevel_thread_global[omp_get_thread_num()]=1;
+		logger->topLevel=2;
+	} else {					/* Interior thread */
+		logger->topLevel = 0;
+	}
+  }
+}
+#endif
+
+#pragma omp critical
+  {
+  	totToStore = logger->numIargs;
+  	if (logger->numVargs>0) totToStore += logger->numVargs*dimension+1;
+
+  	if (totToStore>0)
+  	{
+  		logger->Iinp = calloc(totToStore, sizeof(int));
+  	}
   }
 
   clock_gettime(CLOCK_MONOTONIC, &logger->ts_start);
@@ -191,6 +256,8 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
   }
   sprintf(&inputString[totToStore*13+2*logger->numCargs], " ");
   
+#pragma omp critical 
+{
   /* Check if routine is in list already */
   found=0;
 
@@ -207,9 +274,9 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
 	  	listEntry->callCount_top = 0;
 	  	listEntry->timeTotal_top = 0.0;
   } else if (listEntry->nextRoutine==NULL && 0==strcmp(listEntry->routineName, logger->NAME))
-  {			/* first entry */
+  {					/* first entry */
   		found=1;
-  } else {			/* Existing list */
+  } else {				/* Existing list */
   	while (1)
   	{
   		if (0==strcmp(listEntry->routineName, logger->NAME))
@@ -221,7 +288,7 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
   		listEntry = listEntry->nextRoutine;
 	}
 
-	  /* else:  new routine */
+	/* else:  new routine */
   	if (0 == found) 
 	{
 		listEntry->nextRoutine = malloc(sizeof(armpl_lnkdlst_t));
@@ -277,15 +344,37 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
   listEntry->timeTotal += logger->ts_end.tv_sec - logger->ts_start.tv_sec + 1.0e-9*(logger->ts_end.tv_nsec - logger->ts_start.tv_nsec);
 
   /* Deal with top level calls */
-  if (1==logger->topLevel)
+  if (0 < logger->topLevel)
   {
   	listEntry->callCount_top++;
   	listEntry->timeTotal_top += logger->ts_end.tv_sec - logger->ts_start.tv_sec + 1.0e-9*(logger->ts_end.tv_nsec - logger->ts_start.tv_nsec);
+#ifndef _OPENMP
   	toplevel_global = 0;
+#else
+	if (1==toplevel_global)
+	{
+		toplevel_global = 0;
+	} else if (2==toplevel_global && omp_get_level()==blas_top_openmp_level)
+	{
+		toplevel_thread_global[omp_get_thread_num()]=0;
+	}
+#endif
   }
 
-  if (logger->numIargs > 1) free(logger->Iinp);
-  if (logger->numCargs > 0) free(logger->Cinp);
+
+  if (logger->numIargs > 1) 
+  {
+  	free(logger->Iinp);
+  	logger->Iinp = NULL;
+  }
+  if (logger->numCargs > 0) 
+  {
+  	free(logger->Cinp);
+  	logger->Cinp = NULL;
+  }
+
+} /* End of OpenMP critical section */
+
 }
 
 /* Utility functions for accessing global data */

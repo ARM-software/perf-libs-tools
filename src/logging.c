@@ -1,6 +1,6 @@
 /*
     perf-libs-tools
-    Copyright 2017 Arm Limited. 
+    Copyright 2017-20 Arm Limited. 
     All rights reserved.
 */
 

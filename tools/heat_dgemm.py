@@ -50,7 +50,7 @@ def generate_heatmap(args):
 
     maxvala = a.max()
     ncols = a.shape[1]
-    
+
     b = np.zeros_like(a)
     step1 = (2 * ncols) + 2
     step2 = (3 * ncols) + 2
@@ -58,12 +58,11 @@ def generate_heatmap(args):
         for j in range (0, ncols):
             b[i][j] = a[i+step1][j]
             b[i+ncols][j] = a[i+step2][j]
-    
+
     maxvalb = b.max()
     for i in range (0, ncols):
         for j in range (0, ncols):
             b[i][j] = b[i][j]/maxvalb*maxvala
-   
 
     fig = plt.figure()
     fig.canvas.set_window_title('DGEMM heatmaps - %s' % args.inFile) 
@@ -99,6 +98,7 @@ def generate_heatmap(args):
     tt_tot = a[ncols2][3]/pt_tot*100.0
 
     pt_t_tot = np.sum(b[0:ncols])
+
     nn_t_tot = a[ncols2+1][0]/maxvalb*maxvala/pt_t_tot*100.0
     nt_t_tot = a[ncols2+1][1]/maxvalb*maxvala/pt_t_tot*100.0
     tn_t_tot = a[ncols2+1][2]/maxvalb*maxvala/pt_t_tot*100.0
