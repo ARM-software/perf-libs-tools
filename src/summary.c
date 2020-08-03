@@ -84,6 +84,7 @@ void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numV
   {
   	firsttime = 0;
   	armpl_enable_summary_list();
+  	toplevel_global = 0;
   }
 
   sprintf(logger->NAME, "%s", FNC);
@@ -92,14 +93,6 @@ void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numV
   logger->numVargs = numVinps;
   logger->numCargs = numCinps;
   
-  if (toplevel_global==0)
-  {
-  	toplevel_global = 1;
-  	logger->topLevel = 1;
-  } else {
-  	logger->topLevel = 0;
-  }
-
 #ifndef _OPENMP
   if (toplevel_global==0)
   {
