@@ -165,7 +165,6 @@ def main(args=None):
         outputfile.write(', %s' % (str(Cargs) ) )
      outputfile.write(');\n')
 
-
      if (ReturnType != "void") :
         outputfile.write("\treturn returnVal;\n")
      outputfile.write("}\n")

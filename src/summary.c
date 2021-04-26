@@ -1,6 +1,6 @@
 /*
     perf-libs-tools
-    Copyright 2017-20 Arm Limited. 
+    Copyright 2017-21 Arm Limited. 
     All rights reserved.
 */
 
@@ -10,7 +10,19 @@
 #include <omp.h>
 #endif
 
+/* Global variables */
+
+struct timespec armpl_progstart;        
 armpl_lnkdlst_t *listHead = NULL;
+
+/* Global variables for identifying top-level call */
+int toplevel_global;
+int blas_top_openmp_level;
+int *toplevel_thread_global;
+int threadtot;
+int armpl_partial;
+
+
 
 /* Routine to record log on standard program exits */
 
@@ -20,11 +32,12 @@ void armpl_summary_exit()
   armpl_lnkdlst_t *thisEntry = listHead;
   armpl_lnkdlst_t *nextEntry = listHead;
   FILE *fptr;
-  char fname[64];
-  static int firsttime=0;
+  char fname[256];
+  static int firsttime = 0;
+  static int increment = 0;
   struct timespec armpl_progstop;
   double printingtime;
-  char *USERENV=NULL, name_root[64];
+  char *USERENV=NULL, name_root[256];
 
   /* Stop the program timer */
   clock_gettime(CLOCK_MONOTONIC, &armpl_progstop);
@@ -38,7 +51,12 @@ void armpl_summary_exit()
   	sprintf(name_root, "%s", USERENV);
   else
   	sprintf(name_root, "/tmp/armplsummary_");
-  sprintf(fname, "%s%.5d.apl", name_root, armpl_get_value_int());
+
+  if (armpl_partial == 0)
+  	sprintf(fname, "%s%.5d.apl", name_root, armpl_get_value_int());
+  else
+  	sprintf(fname, "%s%.5d_%.5d.apl", name_root, armpl_get_value_int(), increment);
+
   fptr = fopen(fname, "w");
 
   fprintf(fptr, "Routine: main  nCalls: 1  Total_time %12.6e nCalls: 1  Total_time %12.6e \n", 
@@ -69,6 +87,7 @@ void armpl_summary_exit()
 
   fclose(fptr);
   printf("Arm Performance Libraries output summary stored in %s\n", fname);
+
   return;
 }
 
@@ -77,14 +96,15 @@ void armpl_summary_exit()
 void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numVinps, int numIinps, int numCinps, int dimension)
 {
   int totToStore;
-  static int firsttime=1, firstthread=1;
+  static long firsttime=0, firstthread=1;
   int *tmpI;
 
-  if (1==firsttime) 
+  if (0==firsttime) 
   {
-  	firsttime = 0;
+  	firsttime = 1;
   	armpl_enable_summary_list();
   	toplevel_global = 0;
+  	armpl_partial = 0;
   }
 
   sprintf(logger->NAME, "%s", FNC);
@@ -124,7 +144,6 @@ void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numV
 			if (firstthread==1)
 			{
 				threadtot = omp_get_num_threads();
-				printf("Allocating array length %d on thread %d...\n", threadtot, omp_get_thread_num());
 				toplevel_thread_global = calloc(threadtot, sizeof(int));
 				blas_top_openmp_level = omp_get_level();
 				firstthread = 0;
@@ -161,6 +180,7 @@ void armpl_logging_enter(armpl_logging_struct *logger, const char *FNC, int numV
   }
 
   clock_gettime(CLOCK_MONOTONIC, &logger->ts_start);
+
   return;
 }
 
@@ -174,6 +194,11 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
   int stringLen, totToStore;
   char *inputString;
   va_list ap;
+  char *USERENV=NULL;
+  static int firsttime = 1;
+  static long long freq_out = 0;
+  static long long incrementer=0;
+
   clock_gettime(CLOCK_MONOTONIC, &logger->ts_end);
 
   while (logger->ts_end.tv_nsec - logger->ts_start.tv_nsec < 0 ) { logger->ts_end.tv_nsec+=1000000000; logger->ts_end.tv_sec-=1;}
@@ -367,6 +392,35 @@ void armpl_logging_leave(armpl_logging_struct *logger, ...)
   }
 
 } /* End of OpenMP critical section */
+
+
+  /* Generate a "unique" filename for the output */
+  if (firsttime == 1)
+  {
+	  USERENV = getenv("ARMPL_SUMMARY_FREQ");
+	  if (USERENV!=NULL && strlen(USERENV)>1) 
+	  	freq_out = atoi(USERENV);
+	  else
+	  	freq_out = 0;
+	  firsttime = 0;
+  }
+
+#pragma omp critical 
+  {
+  	if (freq_out > 0)
+  	{
+  		incrementer++;
+
+   		 if (incrementer>=freq_out) 
+  		{
+  			armpl_partial = 1;
+  			armpl_summary_exit();
+  			incrementer = 0;
+  			armpl_partial = 0;
+  			freq_out = (freq_out * 11) / 10;		/* Makes each step 10% greater */
+  		}
+  	}
+  }
 
 }
 

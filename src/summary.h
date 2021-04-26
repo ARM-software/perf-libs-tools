@@ -1,6 +1,6 @@
 /*
     perf-libs-tools
-    Copyright 2017-20 Arm Limited. 
+    Copyright 2017-21 Arm Limited. 
     All rights reserved.
 */
 
@@ -42,14 +42,6 @@ typedef struct armpl_lnkd_lst {
     struct armpl_lnkd_lst *nextRoutine;
     struct armpl_lnkd_lst *nextCase;
 } armpl_lnkdlst_t;
-
-struct timespec armpl_progstart;        
-
-/* Global variables for identifying top-level call */
-int toplevel_global;
-int blas_top_openmp_level;
-int *toplevel_thread_global;
-int threadtot;
 
 /* Prototypes for logging functions */
 

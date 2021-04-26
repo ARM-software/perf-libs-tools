@@ -1,5 +1,5 @@
 ================================================================================
-perf-libs-tools         Copyright 2017-20 Arm Limited        All rights reserved
+perf-libs-tools         Copyright 2017-21 Arm Limited        All rights reserved
 ================================================================================
 
 Tools to support Arm Performance Libraries
@@ -24,10 +24,10 @@ Compiling
 ---------
 
 1) Ensure that you are using the latest version of the logging library to match 
-   your build of Arm Performance Libraries.  This version matches 20.2.  Note 
+   your build of Arm Performance Libraries.  This version matches 21.0.  Note 
    you can build using either GCC or Arm Compiler, however an Arm Performance 
    Libraries or Arm Compiler module must have been loaded to add the correct 
-   directory containing 'armpl.h' to your path..
+   directory containing 'armpl.h' to your path.
 
 2) From this top level directory type "make".
 
@@ -61,6 +61,24 @@ Usage
    
   with the appropriate PID included.  The root of this can be modified using
   the environment variable ARMPL_SUMMARY_FILEROOT.
+
+4) For certain applications we have seen situations where programs do not 
+   terminate as expected, for instance if they are killed, crash, or are forked
+   from Python.  In these cases it can be useful to have intermediate output 
+   files written during the execution.  In order to use this functionality use 
+   the environment variable ARMPL_SUMMARY_FREQ to set an initial frequency of
+   library calls between each output.  By default this frequency grows by 10% 
+   each output in order to limit the overhead in cases where the user has 
+   little knowledge of the number of cases expected.  
+
+   If using this frequency output, these extra output files will have an
+   additional subscript in the name written, e.g.
+
+     /tmp/armplsummary_16776_01.apl
+
+   This is because a terminating program may die mid-write of the output file,
+   hence allowing multiple file names to be iterated around means you can check
+   which was the latest output.  
 
 Note we have also included the library "lib/libarmpl-logger.so" which is used in 
 the same way, however this gives much more verbose output producing an output 
