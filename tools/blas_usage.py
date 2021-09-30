@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #   perf-libs-tools
 #   Copyright 2017 Arm Limited.
