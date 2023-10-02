@@ -63,7 +63,10 @@ def main(args=None):
      # Now make logging function (Step 3.c.i)
      outputfile.write("%s{\n" % line)
      if (ReturnType != "void") :
-        outputfile.write("\t%s returnVal;\n" % ReturnType)
+        if (ReturnType == "fftwplan"):
+            outputfile.write("\t%s returnVal = NULL;\n" % ReturnType)
+        else:
+            outputfile.write("\t%s returnVal;\n" % ReturnType)
      outputfile.write("\tarmpl_logging_struct logger;\n")
      # Count int and char parameters for recording (Step 3.c.ii)
      numI = line.count("armpl_int_t")+line.count("fftwplan")
