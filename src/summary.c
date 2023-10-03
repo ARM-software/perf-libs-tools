@@ -32,7 +32,7 @@ void armpl_summary_exit()
   armpl_lnkdlst_t *thisEntry = listHead;
   armpl_lnkdlst_t *nextEntry = listHead;
   FILE *fptr;
-  char fname[256];
+  char fname[512];
   static int firsttime = 0;
   static int increment = 0;
   struct timespec armpl_progstop;

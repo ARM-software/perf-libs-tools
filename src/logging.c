@@ -84,7 +84,7 @@ void armpl_logging_leave(armpl_logging_struct *logger)
 
   if (firsttime==1)
   {
-  	char fname[32];
+  	char fname[128];
   	/* Generate a "unique" filename for the output */
   	USERENV = getenv("ARMPL_LOGING_FILEROOT");
   	if (USERENV!=NULL && strlen(USERENV)>1) 
