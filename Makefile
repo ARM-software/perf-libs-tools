@@ -16,10 +16,10 @@ libarmpl_mp-summarylog.so: preload-sumgen.c src/summary.c src/PROTOTYPES
 	cd src && ${CC} -fPIC ${CFLAGS} ${OMPFLAG} -shared -o ../lib/$@ preload-sumgen.c summary.c -ldl
 
 preload-gen.c: src/makepreload.py src/PROTOTYPES
-	cd src && python makepreload.py 
+	cd src && python3 makepreload.py 
 
 preload-sumgen.c: src/makepreload-post.py src/PROTOTYPES
-	cd src && python makepreload-post.py
+	cd src && python3 makepreload-post.py
 
 tools: tools/Process-dgemm
 
